@@ -171,7 +171,7 @@ async function send(){
     const u=auth.currentUser.uid,pk=ph.slice(-8),day=Math.floor(Date.now()/86400000);
     const ts=firebase.firestore.FieldValue.serverTimestamp();
     const L=lines();const b=DB.batch();
-    b.set(DB.collection("pending").doc(),{uid:u,n:form.n.trim().slice(0,60),p:ph,pk,m:form.m.trim().slice(0,300),t:total(),items:L.map(l=>[l.p.id,l.p.name,l.q,l.p.sell]),slip,createdAt:ts});
+    b.set(DB.collection("pending").doc(),{uid:u,n:form.n.trim().slice(0,60),p:ph,pk,m:form.m.trim().slice(0,300),t:total(),items:L.map(l=>({pid:l.p.id,name:l.p.name,qty:l.q,sell:l.p.sell})),slip,createdAt:ts});
     b.set(DB.doc("limits/"+u),{last:ts});
     b.set(DB.doc("phoneDay/"+pk+"_"+day),{n:firebase.firestore.FieldValue.increment(1),last:ts},{merge:true});
     await b.commit();

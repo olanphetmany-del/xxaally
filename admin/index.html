@@ -225,7 +225,7 @@ const tms=t=>t&&t.toMillis?t.toMillis():(t||0);
 function pendHtml(){const L=[...S.pending].sort((a,b)=>tms(a.createdAt)-tms(b.createdAt));if(!L.length)return"";
   return `<h2 class="h">🆕 ออเดอร์จากหน้าร้าน รอยืนยัน (${L.length})</h2>`+L.map(pd=>{const c=findCust(pd.n,pd.p);
   return `<div class="pend"><div class="row" style="align-items:flex-start"><img class="slip" src="${esc(pd.slip)}" data-act="view" alt="สลิป"><div><b>👤 ${esc(pd.n)}</b> ${c?`<span class="tag">ลูกค้าเดิม</span>`:""}<div class="sub">📞 ${esc(pd.p)} · ${dstr(tms(pd.createdAt))}</div>
-  <div style="font-size:14px;margin-top:4px">${(pd.items||[]).map(i=>`• ${esc(i[1])} ×${n(i[2])}`).join("<br>")}</div>
+  <div style="font-size:14px;margin-top:4px">${(pd.items||[]).map(i=>`• ${esc(i.name)} ×${n(i.qty)}`).join("<br>")}</div>
   <div style="margin-top:4px"><b>${kip(n(pd.t))}</b>${pd.m?` · <span class="sub">${esc(pd.m)}</span>`:""}</div></div></div>
   <p class="note">แตะรูปสลิปเพื่อดูชัดๆ · เช็กว่าเงินเข้าบัญชีจริงก่อนกดรับ</p>
   <div class="acts"><button class="btn sm" style="background:var(--g);color:#fff" data-act="pd-ok" data-id="${pd.id}">✓ เงินเข้าแล้ว รับออเดอร์</button><button class="btn sm red" data-act="pd-no" data-id="${pd.id}">✕ ปฏิเสธ</button></div></div>`}).join("")}
@@ -502,7 +502,7 @@ document.addEventListener("click",async e=>{
   case "settings":mSettings();break;
   case "login":{const pr=new firebase.auth.GoogleAuthProvider();pr.setCustomParameters({prompt:"select_account"});try{await firebase.auth().signInWithPopup(pr)}catch(err){if(err.code==="auth/popup-blocked"||err.code==="auth/operation-not-supported-in-this-environment")firebase.auth().signInWithRedirect(pr);else toast("เข้าสู่ระบบไม่สำเร็จ: "+err.code)}break}
   case "logout":closeModal();await firebase.auth().signOut();location.reload();break;
-  case "pd-ok":{const pd=S.pending.find(x=>x.id===id);if(!pd)return;S.draft=draftFromMsg("#OY"+JSON.stringify({n:pd.n,p:pd.p,m:pd.m,t:pd.t,i:pd.items}));const fid=uid("f");PC["photos/"+fid]=pd.slip;S.draft.slips=[{id:fid,isNew:true}];S.draft.pendingId=pd.id;S.draft.raw="";render();scrollTo(0,0);break}
+  case "pd-ok":{const pd=S.pending.find(x=>x.id===id);if(!pd)return;S.draft=draftFromMsg("#OY"+JSON.stringify({n:pd.n,p:pd.p,m:pd.m,t:pd.t,i:(pd.items||[]).map(i=>[i.pid,i.name,i.qty,i.sell])}));const fid=uid("f");PC["photos/"+fid]=pd.slip;S.draft.slips=[{id:fid,isNew:true}];S.draft.pendingId=pd.id;S.draft.raw="";render();scrollTo(0,0);break}
   case "seed":{closeModal();try{const r=await fetch("../products.json",{cache:"no-store"});const d=await r.json();toast("กำลังนำเข้า…");await importData({products:d.products.filter(x=>!pById(x.id))})}catch(err){toast("นำเข้าไม่สำเร็จ: "+(err.code||err.message||""))}break}
   case "pd-no":confirmBox("ปฏิเสธออเดอร์นี้? (ลบทิ้ง)","pd-no-ok",id);break;
   case "pd-no-ok":closeModal();await safe(()=>DB.collection("pending").doc(id).delete(),"ปฏิเสธแล้ว");break;
