@@ -114,7 +114,7 @@ const STORE_URL="https://olanphetmany-del.github.io/xxaally/";
 const OWNER="olan.phetmany@gmail.com";
 const FBCFG={apiKey:"AIzaSyBpbY3mOUdiaXzC1BiOCe9mJVuJor6R-H8",authDomain:"preorder-augx.firebaseapp.com",projectId:"preorder-augx",storageBucket:"preorder-augx.firebasestorage.app",messagingSenderId:"236415572495",appId:"1:236415572495:web:3250af9d2eeebf395da17a"};
 const PUBK=["shopName","wa","bank","accNo","accName","qr"];
-const DEF={rate:15.9,buffer:3,fee:15,minFee:10000,feeItem:0,kg:0,round:1000,shopName:"ຮັບຫິ້ວ Olive Young",wa:"020 77499999",bank:"BCEL OnePay (LAO QR)",accNo:"",accName:"MR Anouxai",qr:"https://olanphetmany-del.github.io/xxaally/img/qr.jpg"};
+const DEF={rate:15.9,buffer:3,fee:0,minFee:0,feeThb:200,thb:680,feeItem:0,kg:0,round:1000,shopName:"ຮັບຫິ້ວ Olive Young",wa:"020 77499999",bank:"BCEL OnePay (LAO QR)",accNo:"",accName:"MR Anouxai",qr:"https://olanphetmany-del.github.io/xxaally/img/qr.jpg"};
 const CATS=[["skin","💧 สกินแคร์"],["mask","🩹 มาสก์ & แผ่นแปะ"],["clean","🫧 คลีนซิ่ง"],["sun","☀️ กันแดด"],["makeup","💄 เมกอัพ"],["nail","💅 เล็บ"],["body","🧴 บอดี้ & มือ"],["hair","💇 ผม"],["other","✨ อื่นๆ"]];
 const catOf=p=>CATS.some(c=>c[0]===p.cat)?p.cat:"other";
 const ST={wait:"รอซื้อ",got:"ได้แล้ว",ask:"รอลูกค้าตอบ",sent:"ส่งแล้ว",refund:"คืนเงิน"};
@@ -136,7 +136,7 @@ const dstr=t=>{const d=new Date(t||0);return d.getDate()+"/"+(d.getMonth()+1)+" 
 function costPer(w,s=S.set){return n(w)*n(s.rate)*(1+n(s.buffer)/100)}
 const CATW={skin:150,mask:120,clean:200,sun:80,makeup:60,nail:50,body:300,hair:350,other:150};
 function gOf(p,cat){return n(p&&p.w)||CATW[cat||(p?catOf(p):"other")]||150}
-function feeOf(c,s=S.set){return Math.max(c*n(s.fee)/100,n(s.minFee))+n(s.feeItem)}
+function feeOf(c,s=S.set){return Math.max(c*n(s.fee)/100,n(s.minFee))+n(s.feeItem)+n(s.feeThb)*n(s.thb)}
 function shipOf(g,s=S.set){return n(g)/1000*n(s.kg)}
 function sellPrice(w,s=S.set,g=CATW.other){if(!n(w))return 0;const c=costPer(w,s);const raw=c+feeOf(c,s)+shipOf(g,s);const r=n(s.round)||1;return Math.ceil(raw/r)*r}
 function priceLine(w,g,s=S.set){const c=costPer(w,s);return `ต้นทุน ${kip(c)} + ค่าหิ้ว ${kip(feeOf(c,s))}${n(s.kg)?` + ค่าขน ${kip(shipOf(g,s))} (${fm(g)}g)`:""}`}
@@ -467,7 +467,7 @@ function mSettings(){
     <label>QR รับเงิน</label><div class="row"><label class="padd" style="flex:none;width:96px" id="qrbox">${s.qr?`<img src="${s.qr}" style="width:92px;height:92px;object-fit:contain">`:`＋<small>รูป QR</small>`}<input type="file" accept="image/*" data-file="qr" hidden></label><span class="note">ถ่ายหรือแคปหน้าจอ QR จากแอปธนาคาร</span></div></div>
   <div class="mcard"><b>💱 คิดราคา</b>
     ${f("rate","1 วอน = กี่กีบ","เรทกลางตลาด (Wise) 7 พ.ย. 2026 ≈ 15.9 — แก้เป็นเรทที่แลกได้จริง")}
-    ${f("buffer","เผื่อค่าแลกเงิน (%)")}${f("fee","ค่าหิ้ว (%)")}${f("minFee","ค่าหิ้วขั้นต่ำต่อชิ้น (กีบ)","ของถูก % ได้น้อยกว่านี้ จะคิดเท่านี้แทน")}${f("feeItem","ค่าหิ้วบวกเพิ่มทุกชิ้น (กีบ)","ปกติ 0")}${f("kg","ค่าขนเข้าลาว ต่อ 1 กก. (กีบ)","0 = ไม่คิด · น้ำหนักสินค้าประมาณตามหมวด หรือใส่เองในหน้าสินค้า")}${f("round","ปัดราคาขึ้นทีละ (กีบ)")}
+    ${f("buffer","เผื่อค่าแลกเงิน (%)")}${f("feeThb","ค่าหิ้วต่อชิ้น (บาท)","ปกติ 200 บาท ต่อ 1 ชิ้น")}${f("thb","1 บาท = กี่กีบ","เรทกลางตลาด พ.ย. 2026 ≈ 640–690 · แก้เป็นเรทที่แลกได้จริง")}${f("fee","ค่าหิ้วเพิ่มเป็น % (ถ้าไม่ใช้ใส่ 0)")}${f("minFee","ค่าหิ้วขั้นต่ำต่อชิ้น (กีบ)","ของถูก % ได้น้อยกว่านี้ จะคิดเท่านี้แทน")}${f("feeItem","ค่าหิ้วบวกเพิ่มทุกชิ้น (กีบ)","ปกติ 0")}${f("kg","ค่าขนเข้าลาว ต่อ 1 กก. (กีบ)","0 = ไม่คิด · น้ำหนักสินค้าประมาณตามหมวด หรือใส่เองในหน้าสินค้า")}${f("round","ปัดราคาขึ้นทีละ (กีบ)")}
     <p class="preview note" id="sx"></p>
     <button class="btn sm ghost wide" data-act="reprice" style="margin-top:8px">🔄 คิดราคาขายใหม่ให้สินค้าทุกตัว</button></div>
   <div class="mcard"><b>🗂 ระบบ</b><button class="btn sm wide" style="margin-top:8px" data-act="seed">📦 นำเข้าสินค้าเริ่มต้น ${S.products.length?"(มีสินค้าแล้ว "+S.products.length+" รายการ)":"56 รายการ"}</button>
