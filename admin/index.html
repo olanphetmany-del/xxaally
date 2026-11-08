@@ -169,7 +169,8 @@ function colRef(c){return DB.collection(c)}
 function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||"{}");for(const k of["customers","products","orders"])S[k]=d[k]||[];S.set={...DEF,...(d.set||{})}}catch(e){}}
 function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({customers:S.customers,products:S.products,orders:S.orders,set:S.set}))}catch(e){toast("พื้นที่ในเครื่องเต็ม")}}
 function upsert(c,o){const a=S[c],i=a.findIndex(x=>x.id===o.id);if(i>=0)a[i]=o;else a.push(o)}
-async function put(c,o){upsert(c,o);const b=JSON.parse(JSON.stringify(o));delete b.id;if(S.mode==="cloud")await colRef(c).doc(o.id).set(b);else saveLocal()}
+function withFee(p){if(!n(p.won)||!n(p.sell))return{...p,fee:0};return{...p,fee:Math.min(n(p.sell),Math.round(feeOf(costPer(p.won))+shipOf(gOf(p))))}}
+async function put(c,o){if(c==="products")o=withFee(o);upsert(c,o);const b=JSON.parse(JSON.stringify(o));delete b.id;if(S.mode==="cloud")await colRef(c).doc(o.id).set(b);else saveLocal()}
 async function del(c,id){S[c]=S[c].filter(x=>x.id!==id);if(S.mode==="cloud")await colRef(c).doc(id).delete();else saveLocal()}
 async function putSet(s){S.set=s;const pub={},pri={};for(const k in s)(PUBK.includes(k)?pub:pri)[k]=s[k];await DB.doc("settings/shop").set(pub);await DB.doc("settings/pricing").set(pri)}
 const PC={};
