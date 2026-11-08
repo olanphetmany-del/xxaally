@@ -183,6 +183,7 @@ async function init(){
   firebase.initializeApp(FBCFG);const auth=firebase.auth();
   auth.onAuthStateChanged(u=>{
     if(!u){S.loaded=false;$("#sync").textContent="ยังไม่ได้เข้าสู่ระบบ";$("#app").innerHTML=`<div class="login"><b style="font-size:40px">🔐</b><h2>เข้าสู่ระบบเจ้าของร้าน</h2><button class="btn pri" data-act="login">เข้าสู่ระบบด้วย Google</button></div>`;return}
+    if(u.isAnonymous){auth.signOut();return}
     if((u.email||"").toLowerCase()!==OWNER||!u.emailVerified){$("#app").innerHTML=`<div class="login"><h2>บัญชีนี้ไม่มีสิทธิ์</h2><p class="note">${esc(u.email||"")}</p><button class="btn ghost" data-act="logout">ออกจากระบบ</button></div>`;return}
     start()});
 }

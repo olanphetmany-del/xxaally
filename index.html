@@ -167,7 +167,7 @@ async function send(){
   if(!DB){er.textContent="ເຊື່ອມຕໍ່ບໍ່ໄດ້ ລອງໃໝ່ອີກຄັ້ງ";return}
   sending=true;refreshSheet();
   try{
-    const auth=firebase.auth();if(!auth.currentUser)await auth.signInAnonymously();
+    const auth=firebase.app("shop").auth();if(!auth.currentUser)await auth.signInAnonymously();
     const u=auth.currentUser.uid,pk=ph.slice(-8),day=Math.floor(Date.now()/86400000);
     const ts=firebase.firestore.FieldValue.serverTimestamp();
     const L=lines();const b=DB.batch();
@@ -180,7 +180,7 @@ async function send(){
     if(m)m.textContent=e&&e.code==="permission-denied"?"ສັ່ງບໍ່ໄດ້: ກະລຸນາລໍຖ້າ 1 ນາທີ ກ່ອນສັ່ງໃໝ່ ຫຼື ເບີນີ້ສັ່ງຄົບ 3 ຄັ້ງໃນມື້ນີ້ແລ້ວ":"ສົ່ງບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່ ("+(e&&e.code||"error")+")"}
 }
 function hydrate(){document.querySelectorAll("img[data-ph]:not([src])").forEach(async im=>{const id=im.dataset.ph;try{if(!PH[id]){const s=await DB.doc("pphotos/"+id).get();PH[id]=s.exists?s.data().d:""}if(PH[id])im.src=PH[id]}catch(e){}})}
-function startLive(){try{firebase.initializeApp(FBCFG);DB=firebase.firestore();
+function startLive(){try{const APP=firebase.initializeApp(FBCFG,"shop");DB=APP.firestore();
   DB.collection("products").onSnapshot(s=>{const L=s.docs.map(d=>({...d.data(),id:d.id})).filter(p=>Number(p.sell)>0).sort((a,b)=>a.name.localeCompare(b.name));if(L.length){P=L;for(const k in cart)if(!P.find(p=>p.id===k))delete cart[k];render();refreshSheet()}},()=>{});
   DB.doc("settings/shop").onSnapshot(d=>{if(d.exists){S={...S,...d.data()};$("#shop").textContent=S.shopName||"ຮັບຫິ້ວ Olive Young"}},()=>{});
 }catch(e){}}
