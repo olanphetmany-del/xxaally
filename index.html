@@ -34,7 +34,7 @@ main{padding:14px 12px 110px;max-width:720px;margin:0 auto}
 .p .b{padding:8px 10px 10px;display:flex;flex-direction:column;flex:1}
 .p .nm{font-size:14px;line-height:1.35;flex:1}
 .p .pw{font-weight:700;color:var(--g);margin-top:6px;font-size:16px}
-.p .pr{font-size:13px;color:var(--mut);margin:0 0 8px}
+.p .pr{font-size:13px;color:var(--mut);margin:2px 0 8px}
 .add{border:0;background:var(--g);color:#fff;border-radius:10px;padding:9px;font:inherit;font-weight:600}
 .qty{display:flex;align-items:center;justify-content:space-between;background:var(--g2);border-radius:10px}
 .qty button{border:0;background:none;width:40px;height:38px;font-size:20px;color:var(--g)}
@@ -102,7 +102,7 @@ const lines=()=>P.filter(p=>cart[p.id]>0).map(p=>({p,q:cart[p.id]}));
 const total=()=>lines().reduce((a,l)=>a+l.p.sell*l.q,0);
 $("#shop").textContent=S.shopName||"ຮັບຫິ້ວ Olive Young";
 function card(p){const q=cart[p.id]||0;
-  return `<div class="p">${p.best&&curCat!=="x"&&p._r?`<span class="rk ${p.best<=3?"t3":""}">${p.best}</span>`:""}<div class="img">${p.img?`<img src="${p.img}" alt="" loading="lazy">`:p.photo?`<img data-ph="${esc(p.photo)}" alt="">`:"🧴"}</div><div class="b"><div class="nm">${esc(p.name)}</div>${p.w?`<div class="pw">₩${fm(p.w)}</div><div class="pr">${fm(p.sell)} ກີບ</div>`:`<div class="pw" style="margin-bottom:8px">${fm(p.sell)} ກີບ</div>`}
+  return `<div class="p">${p.best&&curCat!=="x"&&p._r?`<span class="rk ${p.best<=3?"t3":""}">${p.best}</span>`:""}<div class="img">${p.img?`<img src="${p.img}" alt="" loading="lazy">`:p.photo?`<img data-ph="${esc(p.photo)}" alt="">`:"🧴"}</div><div class="b"><div class="nm">${esc(p.name)}</div><div class="pw">${fm(p.sell)} ກີບ</div><div class="pr">${p.won?`🇰🇷 ₩${fm(p.won)}`:"&nbsp;"}</div>
   ${q?`<div class="qty"><button data-a="m" data-id="${p.id}">−</button><b>${q}</b><button data-a="p" data-id="${p.id}">+</button></div>`:`<button class="add" data-a="p" data-id="${p.id}">+ ເພີ່ມ</button>`}</div></div>`}
 const CATS=[["skin","💧 ສະກິນແຄຣ"],["mask","🩹 ມາສກ໌ & ແຜ່ນແປະ"],["clean","🫧 ຄລີນຊິ່ງ"],["sun","☀️ ກັນແດດ"],["makeup","💄 ເມກອັບ"],["nail","💅 ເລັບ"],["body","🧴 ບໍດີ້ & ມື"],["hair","💇 ຜົມ"],["other","✨ ອື່ນໆ"]];
 let curCat="all";
