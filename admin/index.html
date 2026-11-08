@@ -63,7 +63,8 @@ input:focus,textarea:focus{outline:2px solid var(--g);border-color:transparent}
 .stat3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
 .stat3>div{background:var(--bg);border-radius:10px;padding:8px}
 .stat span,.stat3 span{display:block;font-size:12px;color:var(--mut)}
-.stat b{font-size:18px}.stat3 b{font-size:14px}
+.stat b{font-size:18px}
+.stat small{display:block;font-size:11px;margin-top:2px}.stat3 b{font-size:14px}
 .empty{text-align:center;color:var(--mut);padding:36px 10px}
 .empty b{font-size:40px;display:block}
 .back{border:0;background:none;color:var(--g);font:inherit;font-weight:600;padding:4px 0 10px}
@@ -450,8 +451,8 @@ function vSum(){
   const paid=S.customers.reduce((a,c)=>a+n(c.paid),0),owe=S.customers.filter(c=>cBal(c.id)<0),rf=S.customers.filter(c=>cBal(c.id)>0);
   const profit=sales-costPer(wonAll)-shipAll;
   return `<div class="stat">
-    <div><span>ยอดขายรวม</span><b>${kip(sales)}</b></div><div><span>กำไรโดยประมาณ</span><b style="color:var(--g)">${kip(profit)}</b></div>
-    <div><span>รับเงินแล้ว</span><b>${kip(paid)}</b></div><div><span>เงินวอนที่ใช้</span><b>${won(wonAll)}</b></div>
+    <div><span>ยอดขายรวม (ลูกค้าจ่าย)</span><b>${kip(sales)}</b></div><div><span>รับเงินแล้ว</span><b>${kip(paid)}</b></div>
+    <div><span>ราคาสินค้าจริง</span><b>${kip(costPer(wonAll))}</b><small class="sub">${won(wonAll)} · เรท ${S.set.rate} +${S.set.buffer}%</small></div><div><span>ค่าหิ้วที่ได้</span><b style="color:var(--g)">${kip(profit)}</b><small class="sub">เฉลี่ย ${kip(items?profit/items:0)} / กล่อง</small></div>${shipAll?`<div><span>ค่าขน (หักแล้ว)</span><b>${kip(shipAll)}</b></div>`:""}
     <div><span>ลูกค้า</span><b>${S.customers.length} คน</b></div><div><span>ซื้อได้แล้ว</span><b>${got} / ${items} ชิ้น</b></div></div>
   ${miss?`<p class="note">⚠️ มี ${miss} รายการที่สินค้ายังไม่ใส่ราคาวอน กำไรอาจคลาดเคลื่อน</p>`:""}
   <div class="card" style="margin-top:12px"><b>ค้างจ่าย</b>${owe.length?owe.map(c=>`<div class="li" data-act="open-c" data-id="${c.id}"><span class="nm">${esc(c.name)}<small>${esc(c.phone)}</small></span><span class="owe">${kip(-cBal(c.id))}</span></div>`).join(""):`<p class="note">ไม่มี 🎉</p>`}</div>
