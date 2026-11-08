@@ -114,7 +114,7 @@ const STORE_URL="https://olanphetmany-del.github.io/xxaally/";
 const OWNER="olan.phetmany@gmail.com";
 const FBCFG={apiKey:"AIzaSyBpbY3mOUdiaXzC1BiOCe9mJVuJor6R-H8",authDomain:"preorder-augx.firebaseapp.com",projectId:"preorder-augx",storageBucket:"preorder-augx.firebasestorage.app",messagingSenderId:"236415572495",appId:"1:236415572495:web:3250af9d2eeebf395da17a"};
 const PUBK=["shopName","wa","bank","accNo","accName","qr"];
-const DEF={rate:15.9,buffer:3,fee:15,feeItem:0,round:1000,shopName:"ຮັບຫິ້ວ Olive Young",wa:"020 77499999",bank:"BCEL OnePay (LAO QR)",accNo:"",accName:"MR Anouxai",qr:"https://olanphetmany-del.github.io/xxaally/img/qr.jpg"};
+const DEF={rate:15.9,buffer:3,fee:15,minFee:10000,feeItem:0,kg:0,round:1000,shopName:"ຮັບຫິ້ວ Olive Young",wa:"020 77499999",bank:"BCEL OnePay (LAO QR)",accNo:"",accName:"MR Anouxai",qr:"https://olanphetmany-del.github.io/xxaally/img/qr.jpg"};
 const CATS=[["skin","💧 สกินแคร์"],["mask","🩹 มาสก์ & แผ่นแปะ"],["clean","🫧 คลีนซิ่ง"],["sun","☀️ กันแดด"],["makeup","💄 เมกอัพ"],["nail","💅 เล็บ"],["body","🧴 บอดี้ & มือ"],["hair","💇 ผม"],["other","✨ อื่นๆ"]];
 const catOf=p=>CATS.some(c=>c[0]===p.cat)?p.cat:"other";
 const ST={wait:"รอซื้อ",got:"ได้แล้ว",ask:"รอลูกค้าตอบ",sent:"ส่งแล้ว",refund:"คืนเงิน"};
@@ -134,7 +134,12 @@ const norm=s=>String(s||"").toLowerCase().replace(/\s+/g," ").trim();
 const digits=s=>String(s||"").replace(/\D/g,"");
 const dstr=t=>{const d=new Date(t||0);return d.getDate()+"/"+(d.getMonth()+1)+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
 function costPer(w,s=S.set){return n(w)*n(s.rate)*(1+n(s.buffer)/100)}
-function sellPrice(w,s=S.set){if(!n(w))return 0;const raw=costPer(w,s)*(1+n(s.fee)/100)+n(s.feeItem);const r=n(s.round)||1;return Math.ceil(raw/r)*r}
+const CATW={skin:150,mask:120,clean:200,sun:80,makeup:60,nail:50,body:300,hair:350,other:150};
+function gOf(p,cat){return n(p&&p.w)||CATW[cat||(p?catOf(p):"other")]||150}
+function feeOf(c,s=S.set){return Math.max(c*n(s.fee)/100,n(s.minFee))+n(s.feeItem)}
+function shipOf(g,s=S.set){return n(g)/1000*n(s.kg)}
+function sellPrice(w,s=S.set,g=CATW.other){if(!n(w))return 0;const c=costPer(w,s);const raw=c+feeOf(c,s)+shipOf(g,s);const r=n(s.round)||1;return Math.ceil(raw/r)*r}
+function priceLine(w,g,s=S.set){const c=costPer(w,s);return `ต้นทุน ${kip(c)} + ค่าหิ้ว ${kip(feeOf(c,s))}${n(s.kg)?` + ค่าขน ${kip(shipOf(g,s))} (${fm(g)}g)`:""}`}
 const cById=id=>S.customers.find(c=>c.id===id),pById=id=>S.products.find(p=>p.id===id),oById=id=>S.orders.find(o=>o.id===id);
 const live=i=>i.status!=="refund";
 function cOrders(cid){return S.orders.filter(o=>o.customerId===cid).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))}
@@ -385,12 +390,14 @@ function mProd(p){
   <div><label class="l0">ชื่อสินค้า</label><input id="pf_name" value="${esc(p?p.name:"")}" placeholder="เช่น Round Lab กันแดด 50ml"></div></div>
   <label>หมวด</label><select id="pf_cat">${CATS.map(([k,l])=>`<option value="${k}" ${(p?catOf(p):"skin")===k?"selected":""}>${l}</option>`).join("")}</select>
   <label>ราคาป้าย (วอน)</label><input id="pf_won" inputmode="numeric" value="${p&&p.won?esc(p.won):""}" placeholder="18000">
-  <label>ราคาขาย (กีบ) — เว้นว่าง = คิดให้อัตโนมัติ</label><input id="pf_sell" inputmode="numeric" value="${p&&p.sell&&p.sell!==sellPrice(p.won)?esc(p.sell):""}">
+  <label>น้ำหนัก (กรัม) — เว้นว่าง = ประมาณตามหมวด</label><input id="pf_w" inputmode="numeric" value="${p&&p.w?esc(p.w):""}" placeholder="${CATW[p?catOf(p):"skin"]}">
+  <label>ราคาขาย (กีบ) — เว้นว่าง = คิดให้อัตโนมัติ</label><input id="pf_sell" inputmode="numeric" value="${p&&p.sell&&p.sell!==sellPrice(p.won,S.set,gOf(p))?esc(p.sell):""}">
   <p class="note" id="pf_pv"></p>
   <div class="row" style="margin-top:12px">${p&&!pStats(p.id).length?`<button class="btn red" style="flex:none" data-act="del-p" data-id="${p.id}">🗑</button>`:""}<button class="btn ghost" data-act="close">ยกเลิก</button><button class="btn" style="background:var(--g);color:#fff" data-act="save-p">บันทึก</button></div>`);
   updPf()}
-function updPf(){const w=n(($("#pf_won")||{}).value),s=n(($("#pf_sell")||{}).value),el=$("#pf_pv");if(!el)return;const auto=sellPrice(w);
-  el.innerHTML=w?`ราคาแนะนำ <b>${kip(auto)}</b> · ขายจริง ${kip(s||auto)} · กำไร ~${kip((s||auto)-costPer(w))}/ชิ้น`:"ใส่ราคาวอน แล้วระบบคิดราคาขายให้"}
+function pfG(){const c=($("#pf_cat")||{}).value||"other",x=$("#pf_w");if(x)x.placeholder=CATW[c]||150;return n(x&&x.value)||CATW[c]||150}
+function updPf(){const w=n(($("#pf_won")||{}).value),s=n(($("#pf_sell")||{}).value),el=$("#pf_pv");if(!el)return;const g=pfG(),auto=sellPrice(w,S.set,g);
+  el.innerHTML=w?`ราคาแนะนำ <b>${kip(auto)}</b><br>${priceLine(w,g)}<br>ขายจริง ${kip(s||auto)} · กำไร ~${kip((s||auto)-costPer(w)-shipOf(g))}/ชิ้น`:"ใส่ราคาวอน แล้วระบบคิดราคาขายให้"}
 
 /* ---- 🛒 shop ---- */
 function shopGroups(){const m={};
@@ -420,7 +427,7 @@ function mOos(key){const R=waitRows(key);if(!R.length)return;const nm=pName(R[0]
   <button class="btn ghost wide" style="margin-top:12px" data-act="close">ยกเลิก</button>`)}
 async function oosGo(key,mode){
   const R=waitRows(key);if(!R.length)return;const nm=pName(R[0].i),p=pById(R[0].i.pid);let ns=0,nw=0;
-  if(mode==="price"){nw=n($("#oos_won").value);if(!nw){toast("ใส่ราคาวอนใหม่");return}ns=sellPrice(nw)}
+  if(mode==="price"){nw=n($("#oos_won").value);if(!nw){toast("ใส่ราคาวอนใหม่");return}ns=sellPrice(nw,S.set,gOf(p))}
   const byC={};for(const r of R)(byC[r.o.customerId]=byC[r.o.customerId]||[]).push(r);
   const msgs=[];
   for(const cid in byC){const c=cById(cid)||{name:"?",phone:""};const rows=byC[cid];const qty=rows.reduce((a,r)=>a+n(r.i.qty),0),amt=rows.reduce((a,r)=>a+n(r.i.sell)*n(r.i.qty),0),old=n(rows[0].i.sell);
@@ -437,10 +444,10 @@ async function oosGo(key,mode){
 
 /* ---- 💰 summary ---- */
 function vSum(){
-  let sales=0,wonAll=0,items=0,got=0,miss=0;
-  for(const o of S.orders)for(const i of o.items||[]){if(!live(i))continue;sales+=n(i.sell)*n(i.qty);items+=n(i.qty);const p=pById(i.pid);if(p&&n(p.won))wonAll+=n(p.won)*n(i.qty);else miss++;if(i.status==="got"||i.status==="sent")got+=n(i.qty)}
+  let sales=0,wonAll=0,shipAll=0,items=0,got=0,miss=0;
+  for(const o of S.orders)for(const i of o.items||[]){if(!live(i))continue;sales+=n(i.sell)*n(i.qty);items+=n(i.qty);const p=pById(i.pid);if(p&&n(p.won)){wonAll+=n(p.won)*n(i.qty);shipAll+=shipOf(gOf(p))*n(i.qty)}else miss++;if(i.status==="got"||i.status==="sent")got+=n(i.qty)}
   const paid=S.customers.reduce((a,c)=>a+n(c.paid),0),owe=S.customers.filter(c=>cBal(c.id)<0),rf=S.customers.filter(c=>cBal(c.id)>0);
-  const profit=sales-costPer(wonAll);
+  const profit=sales-costPer(wonAll)-shipAll;
   return `<div class="stat">
     <div><span>ยอดขายรวม</span><b>${kip(sales)}</b></div><div><span>กำไรโดยประมาณ</span><b style="color:var(--g)">${kip(profit)}</b></div>
     <div><span>รับเงินแล้ว</span><b>${kip(paid)}</b></div><div><span>เงินวอนที่ใช้</span><b>${won(wonAll)}</b></div>
@@ -460,7 +467,7 @@ function mSettings(){
     <label>QR รับเงิน</label><div class="row"><label class="padd" style="flex:none;width:96px" id="qrbox">${s.qr?`<img src="${s.qr}" style="width:92px;height:92px;object-fit:contain">`:`＋<small>รูป QR</small>`}<input type="file" accept="image/*" data-file="qr" hidden></label><span class="note">ถ่ายหรือแคปหน้าจอ QR จากแอปธนาคาร</span></div></div>
   <div class="mcard"><b>💱 คิดราคา</b>
     ${f("rate","1 วอน = กี่กีบ","เรทกลางตลาด (Wise) 7 พ.ย. 2026 ≈ 15.9 — แก้เป็นเรทที่แลกได้จริง")}
-    ${f("buffer","เผื่อค่าแลกเงิน (%)")}${f("fee","ค่าหิ้ว (%)")}${f("feeItem","ค่าหิ้วเพิ่มต่อชิ้น (กีบ)")}${f("round","ปัดราคาขึ้นทีละ (กีบ)")}
+    ${f("buffer","เผื่อค่าแลกเงิน (%)")}${f("fee","ค่าหิ้ว (%)")}${f("minFee","ค่าหิ้วขั้นต่ำต่อชิ้น (กีบ)","ของถูก % ได้น้อยกว่านี้ จะคิดเท่านี้แทน")}${f("feeItem","ค่าหิ้วบวกเพิ่มทุกชิ้น (กีบ)","ปกติ 0")}${f("kg","ค่าขนเข้าลาว ต่อ 1 กก. (กีบ)","0 = ไม่คิด · น้ำหนักสินค้าประมาณตามหมวด หรือใส่เองในหน้าสินค้า")}${f("round","ปัดราคาขึ้นทีละ (กีบ)")}
     <p class="preview note" id="sx"></p>
     <button class="btn sm ghost wide" data-act="reprice" style="margin-top:8px">🔄 คิดราคาขายใหม่ให้สินค้าทุกตัว</button></div>
   <div class="mcard"><b>🗂 ระบบ</b><button class="btn sm wide" style="margin-top:8px" data-act="seed">📦 นำเข้าสินค้าเริ่มต้น ${S.products.length?"(มีสินค้าแล้ว "+S.products.length+" รายการ)":"56 รายการ"}</button>
@@ -469,7 +476,7 @@ function mSettings(){
   <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="close">ปิด</button><button class="btn" style="background:var(--g);color:#fff" data-act="save-set">บันทึก</button></div>`);
   updSx()}
 function readSet(){const o={...S.set};for(const k in DEF){if(k==="qr")continue;const el=$("#s_"+k);if(el)o[k]=typeof DEF[k]==="number"?n(el.value):el.value.trim()}o.qr=S.sdraft?S.sdraft.qr:S.set.qr;return o}
-function updSx(){const el=$("#sx");if(el){const t=readSet();el.innerHTML=`ตัวอย่าง: ₩10,000 → ขาย <b>${kip(sellPrice(10000,t))}</b> (ต้นทุน ${kip(costPer(10000,t))})`}}
+function updSx(){const el=$("#sx");if(el){const t=readSet();el.innerHTML=`ตัวอย่าง ครีม 150g<br>₩30,000 → ขาย <b>${kip(sellPrice(30000,t,150))}</b> · ${priceLine(30000,150,t)}<br>₩10,000 → ขาย <b>${kip(sellPrice(10000,t,150))}</b> · ${priceLine(10000,150,t)}<br>₩2,000 → ขาย <b>${kip(sellPrice(2000,t,150))}</b> · ${priceLine(2000,150,t)}`}}
 function mRecv(c,refund){const b=Math.abs(cBal(c.id));
   modal(`<h2>${refund?"↩️ คืนเงินให้":"💵 รับเงินจาก"} ${esc(c.name)}</h2><p class="note">${refund?"ต้องคืน":"ค้างอยู่"} ${kip(b)}</p>
   <label>จำนวน (กีบ)</label><input id="rv" inputmode="numeric"><div class="chips"><button class="chip" data-act="rv-fill" data-v="${b}">ทั้งหมด ${kip(b)}</button></div>
@@ -485,7 +492,7 @@ document.addEventListener("input",e=>{
   if(t.dataset.act==="search"||t.dataset.act==="psearch"){const k=t.dataset.act==="search"?"q":"pq";S[k]=t.value;const p=t.selectionStart;render();const s=$(`[data-act="${t.dataset.act}"]`);s.focus();s.setSelectionRange(p,p);return}
   if(t.id==="pq")return updPlist();
   if(t.id==="np_won"){const w=n(t.value);$("#np_pv").textContent=w?"ราคาขาย "+kip(sellPrice(w)):"";return}
-  if(t.id==="pf_won"||t.id==="pf_sell")return updPf();
+  if(t.id==="pf_won"||t.id==="pf_sell"||t.id==="pf_w"||t.id==="pf_cat")return updPf();
   if(t.id==="oos_won"){const w=n(t.value);$("#oos_pv").textContent=w?"ราคาขายใหม่ "+kip(sellPrice(w))+" /ชิ้น":"";return}
   if(t.id&&t.id.startsWith("s_"))return updSx();
   if(d&&t.dataset.d){d[t.dataset.d]=t.value;if(t.dataset.d==="name"||t.dataset.d==="phone")updCsug()}
@@ -516,7 +523,7 @@ document.addEventListener("click",async e=>{
   case "pd-no-ok":closeModal();await safe(()=>DB.collection("pending").doc(id).delete(),"ปฏิเสธแล้ว");break;
   case "close":closeModal();break;
   case "save-set":{const s=readSet();if(!s.rate){toast("ใส่เรทเงินก่อน");return}closeModal();await safe(()=>putSet(s),"บันทึกแล้ว");render();break}
-  case "reprice":{const s=readSet();await safe(()=>putSet(s));for(const p of S.products)if(n(p.won))await safe(()=>put("products",{...p,sell:sellPrice(p.won,s)}));toast("คิดราคาใหม่แล้ว · บอก Claude ให้อัปเดตหน้าร้าน");closeModal();render();break}
+  case "reprice":{const s=readSet();await safe(()=>putSet(s));for(const p of S.products)if(n(p.won))await safe(()=>put("products",{...p,sell:sellPrice(p.won,s,gOf(p))}));toast("คิดราคาใหม่แล้ว · บอก Claude ให้อัปเดตหน้าร้าน");closeModal();render();break}
   case "copy-link":{const t=`🛍️ ເປີດຮັບຫິ້ວ Olive Young ຈາກເກົາຫຼີ 🇰🇷\nເລືອກສິນຄ້າ ແລະ ສັ່ງຊື້ໄດ້ທີ່ນີ້ 👇\n${STORE_URL}`;try{await navigator.clipboard.writeText(t);toast("คัดลอกแล้ว ✓")}catch(err){toast("คัดลอกไม่ได้ กดค้างที่ลิงก์แทน")}break}
   case "parse":{const t=S.paste.trim();if(!t){toast("วางข้อความก่อน");return}S.draft=draftFromMsg(t);if(!S.draft.parsed)toast("ไม่พบรหัสออเดอร์ — กรอกเอง");render();scrollTo(0,0);break}
   case "manual":S.draft={oid:null,cid:null,name:"",phone:"",items:[],pay:"",note:"",slips:[],removed:[]};render();break;
@@ -559,11 +566,11 @@ document.addEventListener("click",async e=>{
   case "new-p":mProd(null);break;
   case "open-p":S.prod=id;render();scrollTo(0,0);break;
   case "edit-p":mProd(pById(id));break;
-  case "save-p":{const f=S.pform,nm=$("#pf_name").value.trim(),w=n($("#pf_won").value),s=n($("#pf_sell").value)||sellPrice(w);
+  case "save-p":{const f=S.pform,nm=$("#pf_name").value.trim(),w=n($("#pf_won").value),s=n($("#pf_sell").value)||sellPrice(w,S.set,pfG()),pw=n($("#pf_w").value);
     if(!nm){toast("ใส่ชื่อสินค้า");return}const dup=findProd(nm);if(dup&&dup.id!==f.id){toast("มีสินค้าชื่อนี้แล้ว");return}
     b.disabled=true;const old=f.id&&pById(f.id);let photo=f.photo;
     const ok=await safe(async()=>{if(f.newPhoto){photo=uid("i");await putPhoto("pphotos",photo,f.newPhoto);if(f.photo)await delPhoto("pphotos",f.photo)}
-      await put("products",{...(old||{createdAt:Date.now()}),id:f.id||uid("p"),name:nm,won:w,sell:s,photo,cat:$("#pf_cat").value})},"บันทึกสินค้าแล้ว");
+      await put("products",{...(old||{createdAt:Date.now()}),id:f.id||uid("p"),name:nm,won:w,sell:s,w:pw,photo,cat:$("#pf_cat").value})},"บันทึกสินค้าแล้ว");
     if(ok){closeModal();render()}else b.disabled=false;break}
   case "del-p":{const p=pById(id);closeModal();await safe(()=>del("products",id),"ลบแล้ว");if(p&&p.photo)await delPhoto("pphotos",p.photo);S.prod=null;render();break}
   case "got":await safe(()=>markGot(b.dataset.key),"ได้ของแล้ว ✓");break;
