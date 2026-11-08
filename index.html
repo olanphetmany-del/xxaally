@@ -61,6 +61,12 @@ input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radiu
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;z-index:30}
 ol{padding-left:20px;margin:8px 0;font-size:14px}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
+<style>.slipbox{display:flex;align-items:center;gap:10px;border:2px dashed #cfd4da;border-radius:12px;padding:10px;margin-top:8px;cursor:pointer}
+.slipbox img{width:70px;height:70px;object-fit:cover;border-radius:8px}.err{color:#d93838;font-size:13px;margin-top:6px}
+.done{text-align:center;padding:10px 0}.done b{font-size:44px;display:block}</style>
 </head>
 <body>
 <header>
@@ -77,8 +83,11 @@ ol{padding-left:20px;margin:8px 0;font-size:14px}
 <div id="layer"></div>
 <script>
 const CAT={"settings": {"shopName": "", "wa": "", "bank": "", "accNo": "", "accName": "", "qr": ""}, "products": [{"id": "pm_03", "name": "Abib Gummy Sheet Mask Heartleaf 5 sheets", "sell": 179000, "img": "", "cat": "mask", "best": 0, "w": 0}, {"id": "pm_10", "name": "Acropass Trouble Cure", "sell": 168000, "img": "img/pm_10.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pt10_02", "name": "Aestura Atobarrier365 Cream 80ml (set)", "sell": 560000, "img": "img/pt10_02.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pc_02", "name": "Alternative Stereo Lip Potion 8ml", "sell": 323000, "img": "img/pc_02.jpg", "cat": "makeup", "best": 0, "w": 0}, {"id": "pm_05", "name": "Anua Daily Care Mask 10 sheets", "sell": 283000, "img": "", "cat": "mask", "best": 0, "w": 0}, {"id": "ptr_01", "name": "Anua Heartleaf 77% Soothing Toner 250ml", "sell": 471000, "img": "img/ptr_01.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "ptr_03", "name": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml", "sell": 603000, "img": "img/ptr_03.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pt10_01", "name": "Anua PDRN Hyaluronic Capsule 100 Serum 30ml x2", "sell": 518000, "img": "img/pt10_01.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pd_16", "name": "Arencia Fresh Green Cleanser 120g", "sell": 349000, "img": "img/pd_16.jpg", "cat": "clean", "best": 0, "w": 0}, {"id": "ptr_08", "name": "Beauty of Joseon Relief Sun Rice+Probiotics 50ml", "sell": 339000, "img": "img/ptr_08.jpg", "cat": "sun", "best": 0, "w": 0}, {"id": "pt10_04", "name": "beplain Mung Bean Cleansing Foam 160ml x2", "sell": 451000, "img": "img/pt10_04.jpg", "cat": "clean", "best": 0, "w": 0}, {"id": "pm_06", "name": "Biodance Eye Patch 60", "sell": 356000, "img": "img/pm_06.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pm_04", "name": "Biodance Real Deep Mask 4 sheets", "sell": 356000, "img": "img/pm_04.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pc_08", "name": "Bioderma Atoderm Lip Balm 1+1", "sell": 227000, "img": "", "cat": "skin", "best": 0, "w": 0}, {"id": "pm_08", "name": "Bioheal Boh Collagen Eye Patch 60", "sell": 260000, "img": "", "cat": "mask", "best": 0, "w": 0}, {"id": "pm_09", "name": "Care Plus Scar Cover Spot Patch", "sell": 108000, "img": "img/pm_09.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pd_08", "name": "Celimax Retinal Shot Tightening Booster 15ml", "sell": 394000, "img": "img/pd_08.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pm_01", "name": "Celimax Tranexamic Brightening Wrapping Mask 5+1", "sell": 413000, "img": "", "cat": "mask", "best": 0, "w": 0}, {"id": "pd_04", "name": "CLIO Sharp So Simple Waterproof Pencil Liner", "sell": 146000, "img": "img/pd_04.jpg", "cat": "makeup", "best": 0, "w": 0}, {"id": "pd_03", "name": "colorgram Nudy Blur Tint", "sell": 166000, "img": "", "cat": "makeup", "best": 0, "w": 0}, {"id": "pc_10", "name": "Dashing Diva Magic Press Nails", "sell": 251000, "img": "", "cat": "nail", "best": 0, "w": 0}, {"id": "pd_15", "name": "Dr.G Green Mild Up Sun+ 50ml", "sell": 375000, "img": "img/pd_15.jpg", "cat": "sun", "best": 0, "w": 0}, {"id": "pd_10", "name": "Dr.G Red Blemish Clear Soothing Cream 70ml", "sell": 520000, "img": "img/pd_10.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pc_05", "name": "Easyderm Spot Patch", "sell": 166000, "img": "img/pc_05.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pd_06", "name": "Fresian Egg-like Cream Blush", "sell": 390000, "img": "img/pd_06.jpg", "cat": "makeup", "best": 0, "w": 0}, {"id": "pd_02", "name": "fwee 3D Voluming Gloss", "sell": 243000, "img": "", "cat": "makeup", "best": 0, "w": 0}, {"id": "ptr_06", "name": "Goodal Green Tangerine Vita C Dark Spot Serum 30ml+10ml", "sell": 511000, "img": "img/ptr_06.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pd_14", "name": "Goodal Heartleaf Sunscreen 50+50ml", "sell": 356000, "img": "", "cat": "sun", "best": 0, "w": 0}, {"id": "pc_01", "name": "Holika Holika My Fave Piece Eyeshadow", "sell": 87000, "img": "img/pc_01.jpg", "cat": "makeup", "best": 0, "w": 0}, {"id": "pc_06", "name": "ILSO Clear Nose Pack 5 sheets", "sell": 243000, "img": "img/pc_06.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pt10_08", "name": "JUNG SAEM MOOL Skin Nuder Cushion (set)", "sell": 724000, "img": "img/pt10_08.jpg", "cat": "makeup", "best": 0, "w": 0}, {"id": "pt10_05", "name": "Ma:nyo Pure Cleansing Oil 200ml x2", "sell": 488000, "img": "img/pt10_05.jpg", "cat": "clean", "best": 0, "w": 0}, {"id": "ptr_04", "name": "Medicube Deep Vita C Capsule Cream 55g", "sell": 639000, "img": "img/ptr_04.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "ptr_05", "name": "Medicube Zero Pore Pad 2.0 70 pads", "sell": 462000, "img": "img/ptr_05.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pm_07", "name": "Mediheal Collagen Capsule Patch 60", "sell": 291000, "img": "img/pm_07.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pt10_07", "name": "Mediheal Derma Toner Pad 100+100", "sell": 545000, "img": "", "cat": "skin", "best": 0, "w": 0}, {"id": "pd_13", "name": "Mediheal Essential Mask 1 sheet", "sell": 19000, "img": "img/pd_13.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pt10_06", "name": "Mediheal Essential Mask 10+1 sheets", "sell": 189000, "img": "img/pt10_06.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pm_02", "name": "Mediheal Hyper Gel Mask 8+1", "sell": 475000, "img": "img/pm_02.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pc_12", "name": "Nivea Deodorant Roll-on 50ml+25ml", "sell": 183000, "img": "img/pc_12.jpg", "cat": "body", "best": 0, "w": 0}, {"id": "pd_12", "name": "numbuzin Mask 10 sheets (No.1-5)", "sell": 338000, "img": "img/pd_12.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "pc_04", "name": "Objet Pore Zero Sun Stick 18g", "sell": 356000, "img": "img/pc_04.jpg", "cat": "sun", "best": 0, "w": 0}, {"id": "pc_11", "name": "ohora Syrup Nail Strengthener 15ml", "sell": 289000, "img": "img/pc_11.jpg", "cat": "nail", "best": 0, "w": 0}, {"id": "pd_05", "name": "Peripera Speedy Skinny Brow", "sell": 114000, "img": "img/pd_05.jpg", "cat": "makeup", "best": 0, "w": 0}, {"id": "pd_01", "name": "rom&nd Juicy Lasting Tint", "sell": 183000, "img": "img/pd_01.jpg", "cat": "makeup", "best": 0, "w": 0}, {"id": "ptr_07", "name": "Round Lab 1025 Dokdo Toner 200ml", "sell": 283000, "img": "img/ptr_07.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pt10_03", "name": "Round Lab Birch Juice Sunscreen 50ml 1+1", "sell": 462000, "img": "img/pt10_03.jpg", "cat": "sun", "best": 0, "w": 0}, {"id": "pd_09", "name": "S.Nature Aqua Squalane Cream 60ml x2", "sell": 417000, "img": "img/pd_09.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pc_03", "name": "Tonefit Sun Cushion SPF50+", "sell": 362000, "img": "img/pc_03.jpg", "cat": "sun", "best": 0, "w": 0}, {"id": "pd_11", "name": "Torriden Dive-in Mask 10 sheets", "sell": 283000, "img": "", "cat": "mask", "best": 0, "w": 0}, {"id": "pd_07", "name": "Torriden Dive-in Serum 50ml + Refill", "sell": 485000, "img": "img/pd_07.jpg", "cat": "skin", "best": 0, "w": 0}, {"id": "pt10_09", "name": "UNOVE Deep Damage Repair Hair Mask 320ml x2", "sell": 562000, "img": "", "cat": "hair", "best": 0, "w": 0}, {"id": "pc_09", "name": "UNOVE Glow Hand Cream 40ml", "sell": 243000, "img": "", "cat": "body", "best": 0, "w": 0}, {"id": "pt10_10", "name": "UNOVE Silk Hair Oil Essence 70ml x2", "sell": 545000, "img": "", "cat": "hair", "best": 0, "w": 0}, {"id": "pc_07", "name": "VT PDRN Reedle Shot Pore Patch 4 sheets", "sell": 223000, "img": "img/pc_07.jpg", "cat": "mask", "best": 0, "w": 0}, {"id": "ptr_02", "name": "VT Reedle Shot 100 50ml", "sell": 483000, "img": "", "cat": "skin", "best": 0, "w": 0}]};
-const S=CAT.settings||{};
-const P=CAT.products||[];
+let S=CAT.settings||{};
+let P=CAT.products||[];
+const FBCFG={apiKey:"AIzaSyBpbY3mOUdiaXzC1BiOCe9mJVuJor6R-H8",authDomain:"preorder-augx.firebaseapp.com",projectId:"preorder-augx",storageBucket:"preorder-augx.firebasestorage.app",messagingSenderId:"236415572495",appId:"1:236415572495:web:3250af9d2eeebf395da17a"};
+let DB=null,slip="",sending=false,sent=null;
+const PH={};
 const cart={};let form={n:"",p:"",m:""};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -93,7 +102,7 @@ const lines=()=>P.filter(p=>cart[p.id]>0).map(p=>({p,q:cart[p.id]}));
 const total=()=>lines().reduce((a,l)=>a+l.p.sell*l.q,0);
 $("#shop").textContent=S.shopName||"ຮັບຫິ້ວ Olive Young";
 function card(p){const q=cart[p.id]||0;
-  return `<div class="p">${p.best&&curCat!=="x"&&p._r?`<span class="rk ${p.best<=3?"t3":""}">${p.best}</span>`:""}<div class="img">${p.img?`<img src="${p.img}" alt="" loading="lazy">`:"🧴"}</div><div class="b"><div class="nm">${esc(p.name)}</div>${p.w?`<div class="pw">₩${fm(p.w)}</div><div class="pr">${fm(p.sell)} ກີບ</div>`:`<div class="pw" style="margin-bottom:8px">${fm(p.sell)} ກີບ</div>`}
+  return `<div class="p">${p.best&&curCat!=="x"&&p._r?`<span class="rk ${p.best<=3?"t3":""}">${p.best}</span>`:""}<div class="img">${p.img?`<img src="${p.img}" alt="" loading="lazy">`:p.photo?`<img data-ph="${esc(p.photo)}" alt="">`:"🧴"}</div><div class="b"><div class="nm">${esc(p.name)}</div>${p.w?`<div class="pw">₩${fm(p.w)}</div><div class="pr">${fm(p.sell)} ກີບ</div>`:`<div class="pw" style="margin-bottom:8px">${fm(p.sell)} ກີບ</div>`}
   ${q?`<div class="qty"><button data-a="m" data-id="${p.id}">−</button><b>${q}</b><button data-a="p" data-id="${p.id}">+</button></div>`:`<button class="add" data-a="p" data-id="${p.id}">+ ເພີ່ມ</button>`}</div></div>`}
 const CATS=[["skin","💧 ສະກິນແຄຣ"],["mask","🩹 ມາສກ໌ & ແຜ່ນແປະ"],["clean","🫧 ຄລີນຊິ່ງ"],["sun","☀️ ກັນແດດ"],["makeup","💄 ເມກອັບ"],["nail","💅 ເລັບ"],["body","🧴 ບໍດີ້ & ມື"],["hair","💇 ຜົມ"],["other","✨ ອື່ນໆ"]];
 let curCat="all";
@@ -111,7 +120,7 @@ function render(){
   else if(!L.length)h=`<div class="empty">ບໍ່ພົບສິນຄ້າ</div>`;
   else{if(curCat==="all"&&!q&&BEST.length)h+=`<div class="sec hot"><h2>🔥 ຂາຍດີ TOP 10 Olive Young</h2><span>ອັນດັບຂາຍດີໃນເກົາຫຼີ</span></div><div class="grid">${rk(BEST)}</div>`;
   for(const [k,l] of used){const G=L.filter(p=>catOf(p)===k);if(G.length)h+=`<div class="sec"><h2>${l}</h2><span>${G.length} ລາຍການ</span></div><div class="grid">${G.map(card).join("")}</div>`}}
-  $("#grid").innerHTML=h;
+  $("#grid").innerHTML=h;if(DB)hydrate();
   const n=lines().reduce((a,l)=>a+l.q,0);
   $("#bar").innerHTML=n?`<div class="bar"><div>🛒 ${n} ອັນ<b>${fm(total())} ກີບ</b></div><button class="btn" data-a="checkout">ສັ່ງຊື້ →</button></div>`:"";
 }
@@ -133,17 +142,53 @@ function checkout(){
   <div class="bank"><b>① ໂອນເງິນ ${fm(total())} ກີບ</b>
     ${S.accNo?`<div style="margin-top:6px">${esc(S.bank)}</div><div class="acc">${esc(S.accNo)} <button class="mini" data-a="copyacc">ກັອບປີ້</button></div><div>${esc(S.accName)}</div>`:`<div class="note">ກະລຸນາສອບຖາມເລກບັນຊີທາງແຊັດ</div>`}
     ${S.qr?`<img src="${S.qr}" alt="QR">`:""}</div>
-  <ol><li>ໂອນເງິນຕາມຍອດຂ້າງເທິງ</li>${S.wa?`<li>ກົດປຸ່ມ <b>ສົ່ງອໍເດີທາງ WhatsApp</b></li>`:`<li>ກົດ <b>ກັອບປີ້ຂໍ້ຄວາມອໍເດີ</b> ແລ້ວສົ່ງໃຫ້ຮ້ານທາງແຊັດ</li>`}<li>ສົ່ງຮູບສະລິບໃນແຊັດດຽວກັນ</li></ol>
-  ${S.wa?`<a class="btn wa" id="wa" href="#" target="_blank" rel="noopener">📲 ② ສົ່ງອໍເດີທາງ WhatsApp</a>`:""}
-  <button class="btn ghost" style="width:100%;margin-top:8px" data-a="copymsg">📋 ກັອບປີ້ຂໍ້ຄວາມອໍເດີ</button>
-  <textarea id="mt" readonly style="display:none;height:160px;margin-top:8px;font-size:13px"></textarea>
+  <label>② ແນບຮູບສະລິບໂອນເງິນ *</label>
+  <label class="slipbox">${slip?`<img src="${slip}" alt="">`:`<span style="font-size:30px">📎</span>`}<span>${slip?"ປ່ຽນຮູບສະລິບ":"ເລືອກຮູບສະລິບ"}</span><input type="file" accept="image/*" id="slipin" hidden></label>
+  <div class="err" id="err"></div>
+  <button class="btn" style="width:100%;margin-top:12px" data-a="send" ${sending?"disabled":""}>${sending?"ກຳລັງສົ່ງ…":"③ ສົ່ງອໍເດີ"}</button>
   <button class="btn ghost" style="width:100%;margin-top:8px" data-a="close">← ກັບໄປເລືອກເພີ່ມ</button>
   </div></div>`;
   updWa();
 }
-function refreshSheet(){if(!$("#layer").innerHTML)return;if(!lines().length){$("#layer").innerHTML="";return}const sh=$(".sheet"),y=sh?sh.scrollTop:0;checkout();const s2=$(".sheet");if(s2)s2.scrollTop=y}
+function doneSheet(){
+  const w=waNum(S.wa);const href=w?`https://wa.me/${w}?text=${encodeURIComponent(sent)}`:"";
+  $("#layer").innerHTML=`<div class="modal" data-a="bg"><div class="sheet"><div class="done"><b>✅</b><h2>ສົ່ງອໍເດີແລ້ວ</h2><p>ຮ້ານຈະກວດສອບສະລິບ ແລະ ຢືນຢັນອໍເດີໃຫ້ໄວໆນີ້ 🙏</p></div>
+  ${href?`<a class="btn wa" href="${href}" target="_blank" rel="noopener">📲 ແຈ້ງຮ້ານທາງ WhatsApp (ບໍ່ບັງຄັບ)</a>`:""}
+  <button class="btn ghost" style="width:100%;margin-top:8px" data-a="close">ປິດ</button></div></div>`}
+function compress(file,max=1100,limit=330000){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
+  img.onload=()=>{let q=.75,out;for(let t=0;t<7;t++){const sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);if(out.length<limit)break;max*=.8;q=Math.max(.45,q-.08)}URL.revokeObjectURL(u);out.length<limit?res(out):rej()};
+  img.onerror=()=>{URL.revokeObjectURL(u);rej()};img.src=u})}
+function normPhone(p){let d=digits(p);if(d.startsWith("856"))d=d.slice(3);if(d.startsWith("0"))d=d.slice(1);return d}
+async function send(){
+  if(sending)return;const er=$("#err");er.textContent="";
+  if(!ok())return;const ph=normPhone(form.p);
+  if(ph.length<8||ph.length>13){er.textContent="ເບີໂທບໍ່ຖືກຕ້ອງ";return}
+  if(!slip){er.textContent="ກະລຸນາແນບຮູບສະລິບໂອນເງິນ";return}
+  if(!DB){er.textContent="ເຊື່ອມຕໍ່ບໍ່ໄດ້ ລອງໃໝ່ອີກຄັ້ງ";return}
+  sending=true;refreshSheet();
+  try{
+    const auth=firebase.auth();if(!auth.currentUser)await auth.signInAnonymously();
+    const u=auth.currentUser.uid,pk=ph.slice(-8),day=Math.floor(Date.now()/86400000);
+    const ts=firebase.firestore.FieldValue.serverTimestamp();
+    const L=lines();const b=DB.batch();
+    b.set(DB.collection("pending").doc(),{uid:u,n:form.n.trim().slice(0,60),p:ph,pk,m:form.m.trim().slice(0,300),t:total(),items:L.map(l=>[l.p.id,l.p.name,l.q,l.p.sell]),slip,createdAt:ts});
+    b.set(DB.doc("limits/"+u),{last:ts});
+    b.set(DB.doc("phoneDay/"+pk+"_"+day),{n:firebase.firestore.FieldValue.increment(1),last:ts},{merge:true});
+    await b.commit();
+    sent=msgText();for(const k in cart)delete cart[k];slip="";form.m="";save();sending=false;render();doneSheet();
+  }catch(e){sending=false;refreshSheet();const m=$("#err");
+    if(m)m.textContent=e&&e.code==="permission-denied"?"ສັ່ງບໍ່ໄດ້: ກະລຸນາລໍຖ້າ 1 ນາທີ ກ່ອນສັ່ງໃໝ່ ຫຼື ເບີນີ້ສັ່ງຄົບ 3 ຄັ້ງໃນມື້ນີ້ແລ້ວ":"ສົ່ງບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່ ("+(e&&e.code||"error")+")"}
+}
+function hydrate(){document.querySelectorAll("img[data-ph]:not([src])").forEach(async im=>{const id=im.dataset.ph;try{if(!PH[id]){const s=await DB.doc("pphotos/"+id).get();PH[id]=s.exists?s.data().d:""}if(PH[id])im.src=PH[id]}catch(e){}})}
+function startLive(){try{firebase.initializeApp(FBCFG);DB=firebase.firestore();
+  DB.collection("products").onSnapshot(s=>{const L=s.docs.map(d=>({...d.data(),id:d.id})).filter(p=>Number(p.sell)>0).sort((a,b)=>a.name.localeCompare(b.name));if(L.length){P=L;for(const k in cart)if(!P.find(p=>p.id===k))delete cart[k];render();refreshSheet()}},()=>{});
+  DB.doc("settings/shop").onSnapshot(d=>{if(d.exists){S={...S,...d.data()};$("#shop").textContent=S.shopName||"ຮັບຫິ້ວ Olive Young"}},()=>{});
+}catch(e){}}
+function refreshSheet(){if(!$("#layer").innerHTML||$(".done"))return;if(!lines().length){$("#layer").innerHTML="";return}const sh=$(".sheet"),y=sh?sh.scrollTop:0;checkout();const s2=$(".sheet");if(s2)s2.scrollTop=y}
 function updWa(){const a=$("#wa");if(a)a.href=waHref()||"#"}
 function ok(){if(!form.n.trim()||digits(form.p).length<6){toast("ກະລຸນາໃສ່ຊື່ ແລະ ເບີໂທ");return false}return true}
+document.addEventListener("change",async e=>{if(e.target.id!=="slipin"||!e.target.files.length)return;
+  try{slip=await compress(e.target.files[0]);refreshSheet()}catch(err){const m=$("#err");if(m)m.textContent="ເປີດຮູບນີ້ບໍ່ໄດ້ ລອງຮູບອື່ນ"}});
 document.addEventListener("input",e=>{const t=e.target;
   if(t.id==="q")return render();
   if(t.id==="fn")form.n=t.value;if(t.id==="fp")form.p=t.value;if(t.id==="fm")form.m=t.value;save();updWa()});
@@ -155,11 +200,12 @@ document.addEventListener("click",async e=>{
   else if(a==="m"){cart[id]=Math.max(0,(cart[id]||0)-1);if(!cart[id])delete cart[id];save();render();refreshSheet()}
   else if(a==="rm"){delete cart[id];save();render();refreshSheet();toast("ລົບອອກແລ້ວ")}
   else if(a==="checkout")checkout();
+  else if(a==="send")send();
   else if(a==="close"||(a==="bg"&&e.target===b)){$("#layer").innerHTML="";render()}
   else if(a==="copyacc"){try{await navigator.clipboard.writeText(S.accNo);toast("ກັອບປີ້ແລ້ວ ✓")}catch(err){toast(S.accNo)}}
   else if(a==="copymsg"){if(!ok())return;const t=msgText();try{await navigator.clipboard.writeText(t);toast("ກັອບປີ້ແລ້ວ ✓ ສົ່ງໃຫ້ຮ້ານທາງແຊັດ")}catch(err){const m=$("#mt");m.style.display="block";m.value=t;m.select();toast("ກົດຄ້າງເພື່ອກັອບປີ້")}}
 });
-render();
+render();startLive();
 </script>
 </body>
 </html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>รับหิ้ว Olive Young</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&family=Noto+Sans+Lao:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--g:#1f8a4c;--g2:#e8f5ec;--ink:#1d1d1f;--mut:#6b7280;--line:#e5e7eb;--bg:#f6f7f8;--red:#d93838;--amb:#b7791f;--blue:#2563eb;--pur:#7c3aed}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:"Noto Sans Thai","Noto Sans Lao",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px}
+header{position:sticky;top:0;z-index:5;background:var(--g);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+header h1{margin:0;font-size:18px;font-weight:700}
+header small{display:block;font-size:12px;opacity:.85;font-weight:400}
+.iconbtn{background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px}
+main{padding:14px 14px 100px;max-width:640px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:6;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:8px 2px 9px;font:inherit;font-size:11px;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:1px}
+nav button b{font-size:20px;font-weight:400}
+nav button.on{color:var(--g);font-weight:700}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.h{margin:0 0 6px;font-size:17px}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+.l0{margin-top:0}
+input,textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:16px;background:#fff}
+input:focus,textarea:focus{outline:2px solid var(--g);border-color:transparent}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{flex:1}
+.btn{border:0;border-radius:12px;padding:12px 14px;font:inherit;font-weight:600;font-size:15px;background:var(--g2);color:var(--g);text-align:center;text-decoration:none;display:inline-block;cursor:pointer}
+.btn.pri{background:var(--g);color:#fff;width:100%;padding:14px;font-size:17px}
+.btn.sm{padding:8px 10px;font-size:13px;border-radius:10px}
+.btn.ghost{background:#f1f2f4;color:var(--ink)}
+.btn.red{background:#fdecec;color:var(--red)}
+.btn.amb{background:#fff4e0;color:var(--amb)}
+.wide{width:100%;display:block}
+.note{font-size:12px;color:var(--mut);margin:4px 0 0}
+.sub{font-size:13px;color:var(--mut)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:13px}
+.chip.on{background:var(--g);color:#fff;border-color:var(--g)}
+.st{border:0;border-radius:999px;padding:5px 10px;font:inherit;font-size:12px;font-weight:600;white-space:nowrap}
+.st.wait{background:#fff4e0;color:var(--amb)}.st.got{background:#e0ecff;color:var(--blue)}.st.ask{background:#f3e8ff;color:var(--pur)}.st.sent{background:var(--g2);color:var(--g)}.st.refund{background:#eee;color:#888;text-decoration:line-through}
+.li{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:14px}
+.li:first-of-type{border-top:0}
+.li .nm,.sug .nm{flex:1;min-width:0}
+.li .nm small,.sug .nm small{display:block;color:var(--mut);font-size:12px}
+.th{width:44px;height:44px;border-radius:9px;object-fit:cover;background:#f1f2f4;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px}
+.qty{display:flex;align-items:center;gap:6px;flex:none}
+.qty button{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:18px}
+.qty span{min-width:20px;text-align:center;font-weight:700}
+.xbtn{border:0;background:none;color:var(--mut);font-size:22px;padding:0 4px;flex:none}
+.total{background:#111827;color:#fff;border-radius:12px;padding:12px 14px;margin:0 0 12px;display:flex;justify-content:space-between;font-weight:700}
+.sel{display:flex;align-items:center;gap:8px;background:var(--g2);border-radius:12px;padding:10px 12px}
+.sel>div{flex:1}.sel small{display:block;color:var(--mut);font-size:12px}
+.tag{background:var(--g);color:#fff;border-radius:6px;font-size:11px;padding:1px 6px;font-weight:600}
+.sug{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;margin-top:6px;font:inherit;font-size:14px}
+.sug.hi{border-color:var(--g);background:var(--g2)}
+.owe{color:var(--red);font-weight:700}.ok{color:var(--g);font-weight:700}.rf{color:var(--pur);font-weight:700}
+.acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.acts>*{flex:1 1 30%}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat>div{background:#fff;border-radius:14px;padding:12px}
+.stat3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+.stat3>div{background:var(--bg);border-radius:10px;padding:8px}
+.stat span,.stat3 span{display:block;font-size:12px;color:var(--mut)}
+.stat b{font-size:18px}.stat3 b{font-size:14px}
+.empty{text-align:center;color:var(--mut);padding:36px 10px}
+.empty b{font-size:40px;display:block}
+.back{border:0;background:none;color:var(--g);font:inherit;font-weight:600;padding:4px 0 10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:640px;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.sheet h2{margin:0 0 8px;font-size:18px}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;z-index:30;max-width:90%;text-align:center}
+.banner{background:#fff7e6;color:#8a5a00;border-radius:10px;padding:8px 10px;font-size:13px;margin-bottom:10px}
+.ph{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pt{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#eee}
+.pt img{width:100%;height:100%;object-fit:cover;display:block}
+.pt .x{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:26px;height:26px;font-size:16px;line-height:1;padding:0}
+.padd{aspect-ratio:1;border:2px dashed #cfd4da;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;color:var(--g);margin:0;cursor:pointer}
+.padd small{font-size:11px;color:var(--mut)}
+.ph.sm{margin-top:10px}
+.big-img{width:100%;border-radius:12px;display:block}
+textarea.msg{font-family:"Noto Sans Lao","Noto Sans Thai",sans-serif;font-size:14px;height:150px}
+.need{font-size:24px;font-weight:700;color:var(--g);min-width:40px;text-align:center;flex:none}
+.prog{height:8px;background:#e5e7eb;border-radius:9px;overflow:hidden;margin-top:6px}.prog i{display:block;height:100%;background:var(--g)}
+.pimg{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:#f1f2f4;display:flex;align-items:center;justify-content:center;font-size:40px}
+.mcard{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
+<style>.badge{background:#d93838;color:#fff;border-radius:999px;font-size:11px;padding:0 6px;margin-left:2px;font-weight:700}
+.pend{border:2px solid #f59e0b;border-radius:14px;padding:12px;margin-bottom:12px;background:#fffbeb}
+.pend img.slip{width:84px;height:84px;object-fit:cover;border-radius:8px;flex:none;background:#eee}
+.login{text-align:center;padding:60px 20px}</style>
+</head>
+<body>
+<header>
+  <h1>🇰🇷 รับหิ้ว Olive Young<small id="sync">กำลังโหลด…</small></h1>
+  <button class="iconbtn" data-act="settings">⚙️ ตั้งค่า</button>
+</header>
+<main id="app"></main>
+<nav id="nav">
+  <button data-tab="in"><b>📥</b><span>รับออเดอร์<span id="pbadge"></span></span></button>
+  <button data-tab="cust"><b>👥</b>ลูกค้า</button>
+  <button data-tab="prod"><b>📦</b>สินค้า</button>
+  <button data-tab="shop"><b>🛒</b>ช้อป</button>
+  <button data-tab="sum"><b>💰</b>สรุป</button>
+</nav>
+<div id="layer"></div>
+
+<script>
+const STORE_URL="https://olanphetmany-del.github.io/xxaally/";
+const OWNER="olan.phetmany@gmail.com";
+const FBCFG={apiKey:"AIzaSyBpbY3mOUdiaXzC1BiOCe9mJVuJor6R-H8",authDomain:"preorder-augx.firebaseapp.com",projectId:"preorder-augx",storageBucket:"preorder-augx.firebasestorage.app",messagingSenderId:"236415572495",appId:"1:236415572495:web:3250af9d2eeebf395da17a"};
+const PUBK=["shopName","wa","bank","accNo","accName","qr"];
+const DEF={rate:15.9,buffer:3,fee:15,feeItem:0,round:1000,shopName:"ຮັບຫິ້ວ Olive Young",wa:"",bank:"",accNo:"",accName:"",qr:""};
+const CATS=[["skin","💧 สกินแคร์"],["mask","🩹 มาสก์ & แผ่นแปะ"],["clean","🫧 คลีนซิ่ง"],["sun","☀️ กันแดด"],["makeup","💄 เมกอัพ"],["nail","💅 เล็บ"],["body","🧴 บอดี้ & มือ"],["hair","💇 ผม"],["other","✨ อื่นๆ"]];
+const catOf=p=>CATS.some(c=>c[0]===p.cat)?p.cat:"other";
+const ST={wait:"รอซื้อ",got:"ได้แล้ว",ask:"รอลูกค้าตอบ",sent:"ส่งแล้ว",refund:"คืนเงิน"};
+const STL={wait:"ລໍຖ້າຊື້",got:"ໄດ້ຂອງແລ້ວ",ask:"ລໍຖ້າຢືນຢັນ",sent:"ສົ່ງແລ້ວ",refund:"ຍົກເລີກ/ຄືນເງິນ"};
+const S={tab:"in",set:{...DEF},customers:[],products:[],orders:[],pending:[],mode:"loading",loaded:false,ld:{},q:"",cf:"all",pq:"",cust:null,prod:null,draft:null,paste:"",pick:null,pform:null,sdraft:null};
+const LS="oy2";
+let DB=null,PRIV=null,legacyDone=false;
+
+/* ---------- utils ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const n=v=>{const x=parseFloat(String(v??"").replace(/,/g,""));return isFinite(x)?x:0};
+const fm=v=>Math.round(v).toLocaleString("en-US");
+const kip=v=>fm(v)+" ₭",won=v=>"₩"+fm(v);
+const uid=(p="o")=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const norm=s=>String(s||"").toLowerCase().replace(/\s+/g," ").trim();
+const digits=s=>String(s||"").replace(/\D/g,"");
+const dstr=t=>{const d=new Date(t||0);return d.getDate()+"/"+(d.getMonth()+1)+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
+function costPer(w,s=S.set){return n(w)*n(s.rate)*(1+n(s.buffer)/100)}
+function sellPrice(w,s=S.set){if(!n(w))return 0;const raw=costPer(w,s)*(1+n(s.fee)/100)+n(s.feeItem);const r=n(s.round)||1;return Math.ceil(raw/r)*r}
+const cById=id=>S.customers.find(c=>c.id===id),pById=id=>S.products.find(p=>p.id===id),oById=id=>S.orders.find(o=>o.id===id);
+const live=i=>i.status!=="refund";
+function cOrders(cid){return S.orders.filter(o=>o.customerId===cid).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))}
+function cItems(cid){return cOrders(cid).flatMap(o=>(o.items||[]).map((i,k)=>({o,k,i})))}
+function cTotal(cid){return cItems(cid).reduce((a,{i})=>a+(live(i)?n(i.sell)*n(i.qty):0),0)}
+function cBal(cid){const c=cById(cid);return n(c&&c.paid)-cTotal(cid)} // <0 customer owes, >0 we must refund
+function pName(i){const p=pById(i.pid);return p?p.name:i.name}
+function pKey(i){return i.pid&&pById(i.pid)?i.pid:"n:"+norm(i.name)}
+function findCust(name,phone){const d=digits(phone);if(d.length>=6){const m=S.customers.find(c=>{const e=digits(c.phone);return e.length>=6&&e.slice(-8)===d.slice(-8)});if(m)return m}const k=norm(name);return k?S.customers.find(c=>norm(c.name)===k&&!digits(c.phone)||norm(c.name)===k&&!d):null}
+function findProd(name){const k=norm(name);return k?S.products.find(p=>norm(p.name)===k):null}
+function waNum(p){let d=digits(p);if(!d)return"";if(d.startsWith("856")||d.startsWith("66"))return d;if(d.startsWith("0"))d=d.slice(1);return "856"+d}
+function waLink(p,t){const w=waNum(p);return w?`https://wa.me/${w}?text=${encodeURIComponent(t)}`:""}
+function balLabel(b){return b<0?`<span class="owe">ค้าง ${kip(-b)}</span>`:b>0?`<span class="rf">ต้องคืน ${kip(b)}</span>`:`<span class="ok">✓ ครบ</span>`}
+function toast(t){const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
+function modal(h){$("#layer").innerHTML=`<div class="modal" data-act="close-bg"><div class="sheet">${h}</div></div>`;hydrate()}
+function closeModal(){$("#layer").innerHTML="";S.pick=null}
+
+/* ---------- storage ---------- */
+function colRef(c){return DB.collection(c)}
+function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||"{}");for(const k of["customers","products","orders"])S[k]=d[k]||[];S.set={...DEF,...(d.set||{})}}catch(e){}}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({customers:S.customers,products:S.products,orders:S.orders,set:S.set}))}catch(e){toast("พื้นที่ในเครื่องเต็ม")}}
+function upsert(c,o){const a=S[c],i=a.findIndex(x=>x.id===o.id);if(i>=0)a[i]=o;else a.push(o)}
+async function put(c,o){upsert(c,o);const b=JSON.parse(JSON.stringify(o));delete b.id;if(S.mode==="cloud")await colRef(c).doc(o.id).set(b);else saveLocal()}
+async function del(c,id){S[c]=S[c].filter(x=>x.id!==id);if(S.mode==="cloud")await colRef(c).doc(id).delete();else saveLocal()}
+async function putSet(s){S.set=s;const pub={},pri={};for(const k in s)(PUBK.includes(k)?pub:pri)[k]=s[k];await DB.doc("settings/shop").set(pub);await DB.doc("settings/pricing").set(pri)}
+const PC={};
+async function getPhoto(col,id){const k=col+"/"+id;if(PC[k])return PC[k];let d=null;
+  try{if(S.mode==="cloud"){const s=await colRef(col).doc(id).get();d=s.exists?s.data().d:null}else d=localStorage.getItem(LS+col+id)}catch(e){}
+  if(d)PC[k]=d;return d}
+async function putPhoto(col,id,d){PC[col+"/"+id]=d;if(S.mode==="cloud")await colRef(col).doc(id).set({d});else{try{localStorage.setItem(LS+col+id,d)}catch(e){toast("เครื่องเต็ม บันทึกรูปไม่ได้")}}}
+async function delPhoto(col,id){delete PC[col+"/"+id];try{if(S.mode==="cloud")await colRef(col).doc(id).delete();else localStorage.removeItem(LS+col+id)}catch(e){}}
+function compress(file,max=1280,limit=180000){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
+  img.onload=()=>{let q=.72,out;for(let t=0;t<6;t++){const sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);if(out.length<limit)break;max*=.8;q=Math.max(.45,q-.08)}URL.revokeObjectURL(u);res(out)};
+  img.onerror=()=>{URL.revokeObjectURL(u);rej()};img.src=u})}
+function hydrate(){document.querySelectorAll("img[data-pid]:not([src])").forEach(async im=>{const d=await getPhoto(im.dataset.col||"photos",im.dataset.pid);if(d)im.src=d})}
+async function safe(fn,msg){try{await fn();if(msg)toast(msg);return true}catch(e){toast("บันทึกไม่สำเร็จ: "+(e&&e.code||"ลองใหม่"));return false}}
+
+async function init(){
+  firebase.initializeApp(FBCFG);const auth=firebase.auth();
+  auth.getRedirectResult().catch(e=>toast("เข้าสู่ระบบไม่สำเร็จ: "+(e.code||"")));
+  auth.onAuthStateChanged(u=>{
+    if(!u){S.loaded=false;$("#sync").textContent="ยังไม่ได้เข้าสู่ระบบ";$("#app").innerHTML=`<div class="login"><b style="font-size:40px">🔐</b><h2>เข้าสู่ระบบเจ้าของร้าน</h2><button class="btn pri" data-act="login">เข้าสู่ระบบด้วย Google</button></div>`;return}
+    if((u.email||"").toLowerCase()!==OWNER||!u.emailVerified){$("#app").innerHTML=`<div class="login"><h2>บัญชีนี้ไม่มีสิทธิ์</h2><p class="note">${esc(u.email||"")}</p><button class="btn ghost" data-act="logout">ออกจากระบบ</button></div>`;return}
+    start()});
+}
+function start(){
+  if(DB)return;DB=firebase.firestore();S.mode="cloud";
+  const timer=setTimeout(()=>{if(!S.loaded)$("#sync").textContent="⚠️ ยังเชื่อมต่อไม่ได้ ลองใหม่ภายหลัง"},10000);
+  const sub=c=>DB.collection(c).onSnapshot(snap=>{S[c]=snap.docs.map(d=>({...d.data(),id:d.id}));S.ld[c]=1;
+      if(!S.loaded&&S.ld.customers&&S.ld.products&&S.ld.orders){S.loaded=true;clearTimeout(timer);syncLabel()}
+      if(c==="pending"){updBadge();if(S.tab==="in"&&!S.draft)updPend();return}
+      render(true)},e=>{clearTimeout(timer);$("#sync").textContent="⚠️ ซิงก์ไม่ได้ ("+e.code+")"});
+  ["customers","orders","products","pending"].forEach(sub);
+  DB.doc("settings/shop").onSnapshot(d=>{if(d.exists){S.set={...S.set,...d.data()};render(true)}},()=>{});
+  DB.doc("settings/pricing").onSnapshot(d=>{if(d.exists){S.set={...S.set,...d.data()};render(true)}},()=>{});
+}
+function syncLabel(){$("#sync").textContent="☁️ บันทึกอัตโนมัติ · ใช้ได้ทุกเครื่อง"}
+
+/* ---------- render ---------- */
+function render(soft){
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===S.tab));
+  if(soft&&S.tab==="in")return;
+  if(!S.loaded){$("#app").innerHTML=`<div class="empty">กำลังโหลด…</div>`;return}
+  $("#app").innerHTML={in:vIn,cust:vCust,prod:vProd,shop:vShop,sum:vSum}[S.tab]();
+  hydrate();if(S.tab==="in"&&S.draft&&!S.draft.cid)updCsug();
+}
+const OYIMG_UNUSED=new Set("pc_01 pc_03 pc_05 pc_07 pc_11 pc_12 pd_04 pd_05 pd_06 pd_07 pd_08 pd_09 pd_10 pd_12 pd_13 pd_15 pd_16 pm_02 pm_04 pm_06 pm_07 pm_09 pm_10 pt10_02 pt10_03 pt10_04 pt10_05 pt10_06 pt10_08 ptr_01 ptr_03 ptr_04 ptr_05 ptr_06 ptr_07 ptr_08 pc_02 pc_04 pc_06 pd_01 pt10_01".split(" "));
+const oyImg=p=>p&&!p.photo&&p.img?"../"+p.img:"";
+function thumb(pid){const p=pById(pid);return p&&p.photo?`<img class="th" data-col="pphotos" data-pid="${p.photo}" alt="">`:oyImg(p)?`<img class="th" src="${oyImg(p)}" alt="" loading="lazy">`:`<div class="th">📦</div>`}
+function photoGrid(list,key){return `<div class="ph">${list.map((p,k)=>`<div class="pt"><img data-col="photos" data-pid="${p.id}" alt=""><button class="x" data-act="ph-rm" data-k="${k}">×</button></div>`).join("")}${list.length<4?`<label class="padd">＋<small>ถ่าย / เลือกรูป</small><input type="file" accept="image/*" multiple data-file="${key}" hidden></label>`:""}</div>`}
+function photoRow(ids){return ids&&ids.length?`<div class="ph sm">${ids.map(p=>`<div class="pt"><img data-col="photos" data-pid="${p}" data-act="view" alt=""></div>`).join("")}</div>`:""}
+
+/* ---- 📥 in ---- */
+function vIn(){
+  if(S.draft)return vDraft();
+  return `<div id="pend">${pendHtml()}</div>${S.products.length?"":`<div class="banner">ยังไม่มีสินค้าในระบบใหม่ <button class="btn sm" data-act="seed">📦 นำเข้าสินค้า 56 รายการ</button></div>`}
+  <div class="card"><h2 class="h">📥 วางออเดอร์จาก WhatsApp</h2>
+    <p class="note">ลูกค้าสั่งจากหน้าร้าน → ข้อความส่งเข้า WhatsApp คุณ → กดค้างที่ข้อความ คัดลอก แล้ววางที่นี่</p>
+    <textarea id="paste" rows="5" placeholder="วางข้อความที่นี่…" style="margin-top:8px">${esc(S.paste)}</textarea>
+    <button class="btn pri" data-act="parse" style="margin-top:10px">อ่านออเดอร์</button></div>
+  <button class="btn ghost wide" data-act="manual">✍️ เพิ่มออเดอร์เอง (ลูกค้าสั่งทางแชท)</button>
+  <div class="card" style="margin-top:12px"><h2 class="h">🔗 ลิงก์หน้าร้านให้ลูกค้า</h2>
+    <input readonly value="${esc(STORE_URL)}">
+    <div class="row" style="margin-top:8px"><button class="btn sm" data-act="copy-link">📋 คัดลอกลิงก์ + ข้อความชวนสั่ง</button><a class="btn sm ghost" href="${esc(STORE_URL)}" target="_blank" rel="noopener">เปิดดู</a></div>
+    <p class="note">มีสินค้า ${S.products.length} รายการในแอป · เพิ่ม/แก้สินค้าแล้ว พิมพ์บอก Claude ว่า <b>"อัปเดตหน้าร้าน"</b></p>
+    ${!S.set.wa||!S.set.accNo?`<p class="note" style="color:var(--red)">⚠️ ยังไม่ได้ใส่เบอร์ WhatsApp / เลขบัญชี — กด ⚙️ ตั้งค่า</p>`:""}</div>`}
+const tms=t=>t&&t.toMillis?t.toMillis():(t||0);
+function pendHtml(){const L=[...S.pending].sort((a,b)=>tms(a.createdAt)-tms(b.createdAt));if(!L.length)return"";
+  return `<h2 class="h">🆕 ออเดอร์จากหน้าร้าน รอยืนยัน (${L.length})</h2>`+L.map(pd=>{const c=findCust(pd.n,pd.p);
+  return `<div class="pend"><div class="row" style="align-items:flex-start"><img class="slip" src="${esc(pd.slip)}" data-act="view" alt="สลิป"><div><b>👤 ${esc(pd.n)}</b> ${c?`<span class="tag">ลูกค้าเดิม</span>`:""}<div class="sub">📞 ${esc(pd.p)} · ${dstr(tms(pd.createdAt))}</div>
+  <div style="font-size:14px;margin-top:4px">${(pd.items||[]).map(i=>`• ${esc(i[1])} ×${n(i[2])}`).join("<br>")}</div>
+  <div style="margin-top:4px"><b>${kip(n(pd.t))}</b>${pd.m?` · <span class="sub">${esc(pd.m)}</span>`:""}</div></div></div>
+  <p class="note">แตะรูปสลิปเพื่อดูชัดๆ · เช็กว่าเงินเข้าบัญชีจริงก่อนกดรับ</p>
+  <div class="acts"><button class="btn sm" style="background:var(--g);color:#fff" data-act="pd-ok" data-id="${pd.id}">✓ เงินเข้าแล้ว รับออเดอร์</button><button class="btn sm red" data-act="pd-no" data-id="${pd.id}">✕ ปฏิเสธ</button></div></div>`}).join("")}
+function updPend(){const el=$("#pend");if(el)el.innerHTML=pendHtml()}
+function updBadge(){const el=$("#pbadge");if(el)el.innerHTML=S.pending.length?`<span class="badge">${S.pending.length}</span>`:""}
+async function importData(d){
+  const cols=["products","customers","orders"];let done=0;
+  for(const c of cols){const L=d[c]||[];for(let i=0;i<L.length;i+=300){const b=DB.batch();for(const o of L.slice(i,i+300)){const x={...o};const id=x.id;delete x.id;b.set(DB.collection(c).doc(id),x)}await b.commit();done+=Math.min(300,L.length-i);toast("นำเข้าแล้ว "+done+" รายการ…")}}
+  for(const c of ["photos","pphotos"]){const E=Object.entries(d[c]||{});let b=DB.batch(),sz=0,k=0;
+    for(const [id,v] of E){b.set(DB.collection(c).doc(id),{d:v});sz+=v.length;k++;if(sz>6e6||k>=200){await b.commit();b=DB.batch();sz=0;k=0}}if(k)await b.commit()}
+  if(d.set)await putSet({...DEF,...S.set,...d.set});
+  toast("นำเข้าข้อมูลเสร็จแล้ว ✓");render()}
+function dTotal(){return(S.draft.items||[]).reduce((a,i)=>a+(live(i)?n(i.sell)*n(i.qty):0),0)}
+function vDraft(){
+  const d=S.draft,c=d.cid&&cById(d.cid),tot=dTotal();
+  return `<div class="row" style="margin-bottom:10px"><h2 class="h" style="margin:0">${d.oid?"✏️ แก้ออเดอร์":"🧾 ออเดอร์ใหม่"}</h2><button class="btn sm ghost" style="flex:none" data-act="draft-cancel">ยกเลิก</button></div>
+  ${d.raw&&!d.parsed?`<div class="banner">อ่านรหัสออเดอร์ไม่ได้ — กรอกเองจากข้อความด้านล่าง<br><small style="white-space:pre-wrap">${esc(d.raw.slice(0,400))}</small></div>`:""}
+  <div class="card">${c?`<div class="sel"><div><b>👤 ${esc(c.name)}</b> <span class="tag">ลูกค้าเดิม</span><small>${esc(c.phone)} · เคยสั่ง ${cItems(c.id).length} รายการ · ยอดจะรวมกัน</small></div>${d.oid?"":`<button class="btn sm ghost" style="flex:none" data-act="unpick-c">ไม่ใช่</button>`}</div>`
+    :`<label class="l0">ชื่อลูกค้า</label><input data-d="name" value="${esc(d.name)}" autocomplete="off" placeholder="ชื่อ">
+      <label>เบอร์โทร</label><input data-d="phone" inputmode="tel" value="${esc(d.phone)}" placeholder="020 …" autocomplete="off"><div id="csug"></div>`}</div>
+  <div class="card"><label class="l0">สินค้า</label>
+    ${d.items.map((it,k)=>`<div class="li">${thumb(it.pid)}<div class="nm">${esc(pName(it))}${it.pid&&pById(it.pid)?"":` <span class="tag" style="background:var(--amb)">ใหม่</span>`}<small>${kip(it.sell)} /ชิ้น</small></div>
+      <div class="qty"><button data-act="dq" data-k="${k}" data-v="-1">−</button><span>${it.qty}</span><button data-act="dq" data-k="${k}" data-v="1">+</button></div><button class="xbtn" data-act="drm" data-k="${k}">×</button></div>`).join("")||`<p class="note">ยังไม่มีสินค้า</p>`}
+    <button class="btn ghost wide" data-act="pick-open" style="margin-top:8px">+ เพิ่มสินค้า</button></div>
+  <div class="total"><span>ยอดรวม</span><span>${kip(tot)}</span></div>
+  ${d.oid?"":`<div class="card"><label class="l0">ได้รับเงินแล้ว (กีบ)</label><input data-d="pay" inputmode="numeric" value="${esc(d.pay)}" placeholder="0">
+    <div class="chips"><button class="chip" data-act="dpay" data-v="">ยังไม่โอน</button><button class="chip" data-act="dpay" data-v="${tot}">โอนครบ ${kip(tot)}</button></div></div>`}
+  <div class="card"><label class="l0">📷 สลิปโอน / รูป (ไม่เกิน 4)</label>${photoGrid(d.slips,"dph")}</div>
+  <div class="card"><label class="l0">หมายเหตุ</label><input data-d="note" value="${esc(d.note)}"></div>
+  <button class="btn pri" data-act="draft-save">💾 บันทึกออเดอร์</button>`}
+function updCsug(){
+  const el=$("#csug");if(!el)return;const d=S.draft,q=norm(d.name),pd=digits(d.phone);
+  const exact=findCust(d.name,d.phone);
+  let L=S.customers.filter(c=>(q&&norm(c.name).includes(q))||(pd.length>=3&&digits(c.phone).includes(pd))).slice(0,5);
+  if(exact&&!L.includes(exact))L.unshift(exact);
+  el.innerHTML=L.length?`<p class="note" style="margin-top:8px">ลูกค้าเดิม? แตะเพื่อรวมยอดเป็นคนเดียวกัน</p>`+L.map(c=>`<button class="sug ${c===exact?"hi":""}" data-act="pick-c" data-id="${c.id}">👤<span class="nm">${esc(c.name)}<small>${esc(c.phone)} · ${cItems(c.id).length} รายการ · ${balLabel(cBal(c.id))}</small></span></button>`).join(""):(q?`<p class="note" style="margin-top:8px">✨ ลูกค้าใหม่ — จะบันทึกให้อัตโนมัติ</p>`:"");
+}
+function parseMsg(t){const m=String(t).match(/#OY(\{[\s\S]*\})/);if(!m)return null;try{const j=JSON.parse(m[1]);return j&&Array.isArray(j.i)?j:null}catch(e){return null}}
+function draftFromMsg(t){
+  const j=parseMsg(t);
+  if(!j)return{oid:null,cid:null,name:"",phone:"",items:[],pay:"",note:"",slips:[],removed:[],raw:t,parsed:false};
+  const c=findCust(j.n,j.p);
+  return{oid:null,cid:c?c.id:null,name:j.n||"",phone:j.p||"",pay:String(n(j.t)||""),note:j.m||"",slips:[],removed:[],raw:t,parsed:true,
+    items:j.i.map(([pid,name,qty,sell])=>{const p=pById(pid)||findProd(name);return{pid:p?p.id:null,name:p?p.name:name,qty:Math.max(1,n(qty)),sell:n(sell),status:"wait"}})}}
+async function saveDraft(btn){
+  const d=S.draft;const items=d.items.filter(i=>n(i.qty)>0);
+  if(!items.length){toast("ใส่สินค้าอย่างน้อย 1 ชิ้น");return}
+  let c=d.cid&&cById(d.cid);
+  if(!c&&!d.name.trim()){toast("ใส่ชื่อลูกค้าก่อน");return}
+  btn.disabled=true;btn.textContent="กำลังบันทึก…";
+  const ok=await safe(async()=>{
+    if(!c){c=findCust(d.name,d.phone);
+      if(!c){c={id:uid("c"),name:d.name.trim(),phone:d.phone.trim(),note:"",paid:0,createdAt:Date.now()};await put("customers",c)}
+      else if(d.phone.trim()&&!c.phone){c={...c,phone:d.phone.trim()};await put("customers",c)}}
+    const out=[];
+    for(const it of items){let p=it.pid&&pById(it.pid)||findProd(it.name);
+      if(!p){p={id:uid("p"),name:String(it.name).trim(),won:0,sell:n(it.sell),photo:"",createdAt:Date.now()};await put("products",p)}
+      const o={pid:p.id,name:p.name,qty:n(it.qty),sell:n(it.sell)||n(p.sell),status:it.status||"wait"};if(it.newSell)o.newSell=it.newSell;out.push(o)}
+    for(const s of d.slips.filter(s=>s.isNew))await putPhoto("photos",s.id,PC["photos/"+s.id]);
+    for(const r of d.removed)await delPhoto("photos",r);
+    const old=d.oid&&oById(d.oid);
+    await put("orders",{id:d.oid||uid("o"),customerId:c.id,items:out,photoIds:d.slips.map(s=>s.id),note:d.note.trim(),createdAt:old?old.createdAt:Date.now()});
+    if(!d.oid&&n(d.pay)){const cc=cById(c.id);await put("customers",{...cc,paid:n(cc.paid)+n(d.pay)})}
+    if(d.pendingId)await DB.collection("pending").doc(d.pendingId).delete();
+  },d.oid?"แก้ไขแล้ว ✓":"บันทึกแล้ว ✓");
+  if(ok){S.draft=null;S.paste="";S.tab="cust";S.cust=c.id;render();scrollTo(0,0)}else{btn.disabled=false;btn.textContent="💾 บันทึกออเดอร์"}
+}
+
+/* ---- picker ---- */
+function mPick(){
+  modal(`<h2>เลือกสินค้า</h2><input id="pq" placeholder="🔍 ค้นหาสินค้า" autocomplete="off"><div id="plist"></div>
+  <div class="mcard"><b>+ สินค้าใหม่</b><label>ชื่อสินค้า</label><input id="np_name" autocomplete="off"><label>ราคาป้าย (วอน)</label><input id="np_won" inputmode="numeric"><p class="note" id="np_pv"></p>
+  <button class="btn wide" data-act="np-add" style="margin-top:8px">เพิ่มและเลือก</button></div>
+  <button class="btn ghost wide" style="margin-top:10px" data-act="close">ปิด</button>`);updPlist()}
+function updPlist(){const el=$("#plist");if(!el)return;const q=norm(($("#pq")||{}).value);
+  const L=S.products.filter(p=>!q||norm(p.name).includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+  el.innerHTML=L.map(p=>`<button class="sug" data-act="pick-p" data-id="${p.id}">${thumb(p.id)}<span class="nm">${esc(p.name)}<small>${won(p.won)} → ${kip(p.sell)}</small></span></button>`).join("")||`<p class="note">${S.products.length?"ไม่พบ":"ยังไม่มีสินค้า เพิ่มใหม่ด้านล่าง"}</p>`;hydrate()}
+async function applyPick(p){
+  const pk=S.pick;closeModal();
+  if(pk.mode==="add"){const d=S.draft,ex=d.items.find(i=>i.pid===p.id);if(ex)ex.qty=n(ex.qty)+1;else d.items.push({pid:p.id,name:p.name,qty:1,sell:n(p.sell),status:"wait"});render()}
+  else if(pk.mode==="replace"){const o=JSON.parse(JSON.stringify(oById(pk.oid)));const it=o.items[pk.k];const old=pName(it);
+    Object.assign(it,{pid:p.id,name:p.name,sell:n(p.sell),status:"wait"});delete it.newSell;await safe(()=>put("orders",o),`เปลี่ยน ${old} → ${p.name} แล้ว`);render()}
+}
+
+/* ---- 👥 customers ---- */
+function vCust(){
+  if(S.cust){const c=cById(S.cust);if(c)return vCustD(c);S.cust=null}
+  const q=norm(S.q);
+  let L=S.customers.filter(c=>!q||norm(c.name+" "+c.phone).includes(q)||digits(c.phone).includes(digits(S.q)||"x"));
+  if(S.cf==="owe")L=L.filter(c=>cBal(c.id)<0);if(S.cf==="rf")L=L.filter(c=>cBal(c.id)>0);if(S.cf==="ask")L=L.filter(c=>cItems(c.id).some(x=>x.i.status==="ask"));
+  const last=c=>Math.max(c.createdAt||0,...cOrders(c.id).map(o=>o.createdAt||0));
+  L.sort((a,b)=>last(b)-last(a));
+  const F=[["all","ทั้งหมด"],["owe","ค้างจ่าย"],["rf","ต้องคืนเงิน"],["ask","รอตอบ"]];
+  return `<input placeholder="🔍 ชื่อ หรือ เบอร์โทร" value="${esc(S.q)}" data-act="search">
+  <div class="chips" style="margin:8px 0 12px">${F.map(([k,l])=>`<button class="chip ${S.cf===k?"on":""}" data-act="cf" data-v="${k}">${l}</button>`).join("")}</div>
+  ${L.length?L.map(c=>{const it=cItems(c.id).filter(x=>live(x.i));const qn=it.reduce((a,x)=>a+n(x.i.qty),0);
+    return `<div class="card" data-act="open-c" data-id="${c.id}" style="cursor:pointer"><div class="row"><div><b>👤 ${esc(c.name)}</b><div class="sub">${esc(c.phone)||"ไม่มีเบอร์"} · ${qn} ชิ้น · ${cOrders(c.id).length} ออเดอร์</div></div><div style="flex:none;text-align:right"><b>${kip(cTotal(c.id))}</b><br>${balLabel(cBal(c.id))}</div></div></div>`}).join("")
+  :`<div class="empty"><b>👥</b>${S.customers.length?"ไม่พบลูกค้า":"ยังไม่มีลูกค้า<br>เริ่มที่แท็บ 📥 รับออเดอร์"}</div>`}`}
+function vCustD(c){
+  const b=cBal(c.id),O=cOrders(c.id);
+  return `<button class="back" data-act="back">← ลูกค้าทั้งหมด</button>
+  <div class="card"><h2 class="h">👤 ${esc(c.name)}</h2><div class="sub">📞 ${esc(c.phone)||"ไม่มีเบอร์"}${c.note?" · "+esc(c.note):""}</div>
+    <div class="stat3"><div><span>ยอดรวม</span><b>${kip(cTotal(c.id))}</b></div><div><span>จ่ายแล้ว</span><b>${kip(n(c.paid))}</b></div><div><span>${b<0?"ค้างจ่าย":b>0?"ต้องคืนเงิน":"สถานะ"}</span><b class="${b<0?"owe":b>0?"rf":"ok"}">${b?kip(Math.abs(b)):"✓ ครบ"}</b></div></div>
+    <div class="acts">${b<0?`<button class="btn sm" data-act="recv" data-id="${c.id}">💵 รับเงิน</button>`:""}${b>0?`<button class="btn sm amb" data-act="refund" data-id="${c.id}">↩️ คืนเงินแล้ว</button>`:""}
+      <button class="btn sm" data-act="bill" data-id="${c.id}">📄 บิล</button><button class="btn sm" data-act="add-for" data-id="${c.id}">➕ สั่งเพิ่ม</button><button class="btn sm ghost" data-act="edit-c" data-id="${c.id}">✏️ ข้อมูล</button></div></div>
+  ${O.map(o=>`<div class="card"><div class="row"><b>🧾 ${dstr(o.createdAt)}</b><span class="sub" style="text-align:right">${esc(o.note)}</span></div>
+    ${(o.items||[]).map((i,k)=>`<div class="li">${thumb(i.pid)}<div class="nm">${esc(pName(i))} × ${n(i.qty)}<small>${kip(n(i.sell)*n(i.qty))}${i.newSell?` · ราคาใหม่ ${kip(i.newSell)}/ชิ้น`:""}</small></div><button class="st ${i.status}" data-act="item" data-id="${o.id}" data-k="${k}">${ST[i.status]||i.status} ▾</button></div>`).join("")}
+    ${photoRow(o.photoIds)}
+    <div class="acts"><button class="btn sm ghost" data-act="edit-o" data-id="${o.id}">✏️ แก้ออเดอร์</button><button class="btn sm red" data-act="del-o" data-id="${o.id}">🗑 ลบ</button></div></div>`).join("")||`<div class="empty">ยังไม่มีออเดอร์</div>`}`}
+function billText(c){
+  const L=cItems(c.id).map(({i})=>`• ${pName(i)} x${n(i.qty)} = ${fm(n(i.sell)*n(i.qty))} ກີບ${i.status==="refund"?" (ຍົກເລີກ)":" · "+STL[i.status]}`).join("\n");
+  const b=cBal(c.id);
+  return `🧾 ບິນຮັບຫິ້ວ Olive Young\nລູກຄ້າ: ${c.name}\n\n${L}\n\nລວມ: ${fm(cTotal(c.id))} ກີບ\nຈ່າຍແລ້ວ: ${fm(n(c.paid))} ກີບ\n${b<0?`ຄ້າງຈ່າຍ: ${fm(-b)} ກີບ`:b>0?`ຈະຄືນເງິນໃຫ້: ${fm(b)} ກີບ`:"✅ ຈ່າຍຄົບແລ້ວ"}\n\nຂອບໃຈຫຼາຍໆ 🙏`}
+function mMsg(title,list){ // list: [{name,phone,text}]
+  modal(`<h2>${title}</h2><p class="note">คัดลอก หรือกดเปิด WhatsApp ส่งให้ลูกค้าแต่ละคน</p>
+  ${list.map((m,x)=>`<div class="mcard"><b>${esc(m.name)}</b> <span class="sub">${esc(m.phone)}</span><textarea class="msg" id="msg${x}" readonly>${esc(m.text)}</textarea>
+    <div class="row" style="margin-top:6px"><button class="btn sm" data-act="copy" data-t="msg${x}">📋 คัดลอก</button>${waLink(m.phone,m.text)?`<a class="btn sm" style="background:#25d366;color:#fff" href="${esc(waLink(m.phone,m.text))}" target="_blank" rel="noopener">WhatsApp</a>`:""}</div></div>`).join("")}
+  <button class="btn ghost wide" style="margin-top:12px" data-act="close">ปิด</button>`)}
+function mItem(o,k){const i=o.items[k];
+  const opt=(s,l)=>i.status===s?"":`<button class="btn wide ${s==="refund"?"red":"ghost"}" style="margin-top:6px" data-act="set-st" data-id="${o.id}" data-k="${k}" data-v="${s}">${l}</button>`;
+  modal(`<h2>${esc(pName(i))} × ${n(i.qty)}</h2><p class="note">ตอนนี้: ${ST[i.status]}</p>
+  ${opt("got","✓ ได้ของแล้ว")}${opt("sent","📦 ส่งให้ลูกค้าแล้ว")}${opt("wait","⏳ รอซื้อ")}${opt("ask","❓ รอลูกค้าตอบ")}
+  ${i.newSell?`<button class="btn wide" style="margin-top:6px" data-act="accept-new" data-id="${o.id}" data-k="${k}">💲 ลูกค้าตกลงราคาใหม่ ${kip(i.newSell)}/ชิ้น</button>`:""}
+  <button class="btn wide ghost" style="margin-top:6px" data-act="replace" data-id="${o.id}" data-k="${k}">🔁 ลูกค้าขอเปลี่ยนเป็นสินค้าอื่น</button>
+  ${opt("refund","↩️ ยกเลิก / คืนเงินตัวนี้")}
+  <button class="btn wide ghost" style="margin-top:12px" data-act="close">ปิด</button>`)}
+
+/* ---- 📦 products ---- */
+function pStats(pid){const r=[];for(const o of S.orders)(o.items||[]).forEach((i,k)=>{if(i.pid===pid)r.push({o,k,i,c:cById(o.customerId)})});return r}
+function vProd(){
+  if(S.prod){const p=pById(S.prod);if(p)return vProdD(p);S.prod=null}
+  const q=norm(S.pq);const L=S.products.filter(p=>!q||norm(p.name).includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+  return `<div class="row" style="margin-bottom:10px"><input placeholder="🔍 ค้นหาสินค้า" value="${esc(S.pq)}" data-act="psearch"><button class="btn" style="flex:none" data-act="new-p">+ เพิ่ม</button></div>
+  ${L.length?CATS.map(([ck,cl])=>{const G=L.filter(p=>catOf(p)===ck);if(!G.length)return"";return `<div class="row" style="margin:14px 2px 6px"><b>${cl}</b><span class="sub" style="text-align:right">${G.length} รายการ</span></div>`+G.map(p=>{const R=pStats(p.id).filter(x=>live(x.i));const q=R.reduce((a,x)=>a+n(x.i.qty),0);const ppl=new Set(R.map(x=>x.o.customerId)).size;
+    return `<div class="card li" style="border:0;padding:12px" data-act="open-p" data-id="${p.id}">${thumb(p.id)}<div class="nm"><b>${esc(p.name)}</b><small>${won(p.won)} → <b style="color:var(--ink)">${kip(p.sell)}</b></small><small>${q?`สั่งแล้ว ${q} ชิ้น · ${ppl} คน`:"ยังไม่มีคนสั่ง"}${p.won?"":" · ⚠️ ยังไม่ใส่ราคาวอน"}</small></div><span style="color:var(--mut)">›</span></div>`}).join("")}).join("")
+  :`<div class="empty"><b>📦</b>${S.products.length?"ไม่พบสินค้า":"ยังไม่มีสินค้า<br>กด + เพิ่ม เพื่อใส่สินค้าที่จะขายบนหน้าร้าน"}</div>`}`}
+function vProdD(p){
+  const R=pStats(p.id);const q=R.filter(x=>live(x.i)).reduce((a,x)=>a+n(x.i.qty),0);
+  return `<button class="back" data-act="back-p">← สินค้าทั้งหมด</button>
+  <div class="card"><div class="row" style="align-items:flex-start">${p.photo?`<img class="th" style="width:90px;height:90px" data-col="pphotos" data-pid="${p.photo}" data-act="view-p">`:oyImg(p)?`<img class="th" style="width:90px;height:90px" src="${oyImg(p)}" data-act="view-p">`:`<div class="th" style="width:90px;height:90px;font-size:36px">📦</div>`}
+    <div><h2 class="h">${esc(p.name)}</h2><div class="sub">${CATS.find(c=>c[0]===catOf(p))[1]}<br>ราคาป้าย ${won(p.won)}<br>ราคาขาย <b style="color:var(--ink)">${kip(p.sell)}</b> · กำไร ~${kip(n(p.sell)-costPer(p.won))}</div></div></div>
+    <div class="acts"><button class="btn sm ghost" data-act="edit-p" data-id="${p.id}">✏️ แก้สินค้า</button></div></div>
+  <div class="card"><b>ใครสั่งบ้าง · รวม ${q} ชิ้น</b>
+    ${R.length?R.map(x=>`<div class="li"><div class="nm" data-act="open-c" data-id="${x.o.customerId}" style="cursor:pointer">👤 ${esc(x.c?x.c.name:"?")} × ${n(x.i.qty)}<small>${esc(x.c?x.c.phone:"")}</small></div><button class="st ${x.i.status}" data-act="item" data-id="${x.o.id}" data-k="${x.k}">${ST[x.i.status]} ▾</button></div>`).join(""):`<p class="note">ยังไม่มีคนสั่ง</p>`}</div>`}
+function mProd(p){
+  S.pform={id:p?p.id:null,photo:p?p.photo:"",newPhoto:null};
+  modal(`<h2>${p?"✏️ แก้สินค้า":"+ เพิ่มสินค้า"}</h2>
+  <div class="row" style="align-items:flex-start"><label class="padd" style="flex:none;width:96px" id="pfph">${p&&p.photo?`<img class="th" style="width:92px;height:92px" data-col="pphotos" data-pid="${p.photo}">`:oyImg(p)?`<img class="th" style="width:92px;height:92px" src="${oyImg(p)}">`:`📷<small>รูปสินค้า</small>`}<input type="file" accept="image/*" data-file="prodph" hidden></label>
+  <div><label class="l0">ชื่อสินค้า</label><input id="pf_name" value="${esc(p?p.name:"")}" placeholder="เช่น Round Lab กันแดด 50ml"></div></div>
+  <label>หมวด</label><select id="pf_cat">${CATS.map(([k,l])=>`<option value="${k}" ${(p?catOf(p):"skin")===k?"selected":""}>${l}</option>`).join("")}</select>
+  <label>ราคาป้าย (วอน)</label><input id="pf_won" inputmode="numeric" value="${p&&p.won?esc(p.won):""}" placeholder="18000">
+  <label>ราคาขาย (กีบ) — เว้นว่าง = คิดให้อัตโนมัติ</label><input id="pf_sell" inputmode="numeric" value="${p&&p.sell&&p.sell!==sellPrice(p.won)?esc(p.sell):""}">
+  <p class="note" id="pf_pv"></p>
+  <div class="row" style="margin-top:12px">${p&&!pStats(p.id).length?`<button class="btn red" style="flex:none" data-act="del-p" data-id="${p.id}">🗑</button>`:""}<button class="btn ghost" data-act="close">ยกเลิก</button><button class="btn" style="background:var(--g);color:#fff" data-act="save-p">บันทึก</button></div>`);
+  updPf()}
+function updPf(){const w=n(($("#pf_won")||{}).value),s=n(($("#pf_sell")||{}).value),el=$("#pf_pv");if(!el)return;const auto=sellPrice(w);
+  el.innerHTML=w?`ราคาแนะนำ <b>${kip(auto)}</b> · ขายจริง ${kip(s||auto)} · กำไร ~${kip((s||auto)-costPer(w))}/ชิ้น`:"ใส่ราคาวอน แล้วระบบคิดราคาขายให้"}
+
+/* ---- 🛒 shop ---- */
+function shopGroups(){const m={};
+  for(const o of S.orders)(o.items||[]).forEach((i,k)=>{if(!["wait","got","ask"].includes(i.status))return;const key=pKey(i);
+    const g=m[key]||(m[key]={key,pid:i.pid,name:pName(i),need:0,got:0,ask:0,wm:{}});
+    if(i.status==="wait"){g.need+=n(i.qty);const c=cById(o.customerId),nm=c?c.name:"?";g.wm[nm]=(g.wm[nm]||0)+n(i.qty)}else if(i.status==="got")g.got+=n(i.qty);else g.ask+=n(i.qty)});
+  for(const g of Object.values(m))g.who=Object.entries(g.wm).map(([k,v])=>k+(v>1?" ×"+v:""));
+  return Object.values(m).sort((a,b)=>(b.need>0)-(a.need>0)||b.need-a.need||a.name.localeCompare(b.name))}
+function vShop(){
+  const G=shopGroups();if(!G.length)return`<div class="empty"><b>🛒</b>ยังไม่มีของต้องซื้อ</div>`;
+  const need=G.reduce((a,g)=>a+g.need,0),got=G.reduce((a,g)=>a+g.got,0),wn=G.reduce((a,g)=>{const p=pById(g.pid);return a+g.need*n(p&&p.won)},0);
+  return `<div class="card"><div class="row"><div><b>ซื้อแล้ว ${got} / ${got+need} ชิ้น</b><div class="sub">ต้องใช้อีก ${won(wn)} ≈ ${kip(costPer(wn))}</div></div></div><div class="prog"><i style="width:${(got+need)?got/(got+need)*100:0}%"></i></div></div>
+  ${G.map(g=>{const p=pById(g.pid);return `<div class="card" style="${g.need?"":"opacity:.55"}"><div class="li" style="padding:0">${thumb(g.pid)}<div class="nm"><b>${esc(g.name)}</b><small>${p&&p.won?won(p.won)+" /ชิ้น":""}${g.got?` · ได้แล้ว ${g.got}`:""}${g.ask?` · รอตอบ ${g.ask}`:""}</small>${g.need?`<small>สำหรับ: ${esc(g.who.join(", "))}</small>`:""}</div><div class="need">${g.need||"✓"}</div></div>
+    ${g.need?`<div class="acts"><label class="btn sm">📷 ได้แล้ว<input type="file" accept="image/*" capture="environment" data-file="got" data-key="${esc(g.key)}" hidden></label><button class="btn sm" data-act="got" data-key="${esc(g.key)}">✓ ได้แล้ว</button><button class="btn sm amb" data-act="oos" data-key="${esc(g.key)}">หมด / ราคาเปลี่ยน</button></div>`:""}</div>`}).join("")}
+  <p class="note" style="text-align:center">📷 ได้แล้ว = ถ่ายรูปของเป็นหลักฐาน รูปจะติดไปกับออเดอร์ของทุกคนที่สั่งตัวนี้</p>`}
+function waitRows(key){const r=[];for(const o of S.orders)(o.items||[]).forEach((i,k)=>{if(i.status==="wait"&&pKey(i)===key)r.push({o,k,i})});return r}
+async function markGot(key,photoId){
+  const byO={};for(const r of waitRows(key))(byO[r.o.id]=byO[r.o.id]||[]).push(r.k);
+  for(const oid in byO){const o=JSON.parse(JSON.stringify(oById(oid)));byO[oid].forEach(k=>o.items[k].status="got");
+    if(photoId){o.photoIds=o.photoIds||[];if(o.photoIds.length<8)o.photoIds.push(photoId)}await put("orders",o)}
+  render()}
+function mOos(key){const R=waitRows(key);if(!R.length)return;const nm=pName(R[0].i),p=pById(R[0].i.pid);
+  modal(`<h2>${esc(nm)}</h2><p class="note">มีคนรอ ${R.reduce((a,r)=>a+n(r.i.qty),0)} ชิ้น · ${new Set(R.map(r=>r.o.customerId)).size} คน</p>
+  <button class="btn wide red" style="margin-top:10px" data-act="oos-go" data-key="${esc(key)}" data-v="out">❌ ของหมด — ถามลูกค้าว่าจะเปลี่ยนหรือรับเงินคืน</button>
+  <div class="mcard"><b>💲 ราคาเปลี่ยน</b><label>ราคาป้ายใหม่ (วอน)</label><input id="oos_won" inputmode="numeric" placeholder="${p?esc(p.won):""}"><p class="note" id="oos_pv"></p>
+  <button class="btn wide" style="margin-top:8px" data-act="oos-go" data-key="${esc(key)}" data-v="price">สร้างข้อความแจ้งลูกค้า</button></div>
+  <button class="btn ghost wide" style="margin-top:12px" data-act="close">ยกเลิก</button>`)}
+async function oosGo(key,mode){
+  const R=waitRows(key);if(!R.length)return;const nm=pName(R[0].i),p=pById(R[0].i.pid);let ns=0,nw=0;
+  if(mode==="price"){nw=n($("#oos_won").value);if(!nw){toast("ใส่ราคาวอนใหม่");return}ns=sellPrice(nw)}
+  const byC={};for(const r of R)(byC[r.o.customerId]=byC[r.o.customerId]||[]).push(r);
+  const msgs=[];
+  for(const cid in byC){const c=cById(cid)||{name:"?",phone:""};const rows=byC[cid];const qty=rows.reduce((a,r)=>a+n(r.i.qty),0),amt=rows.reduce((a,r)=>a+n(r.i.sell)*n(r.i.qty),0),old=n(rows[0].i.sell);
+    let t;
+    if(mode==="out")t=`ສະບາຍດີ ${c.name} 🙏\nສິນຄ້າ "${nm}" (x${qty}) ໝົດຢູ່ຮ້ານ Olive Young ເດີ້ 😢\n\nຢາກປ່ຽນເປັນຕົວອື່ນແທນ ຫຼື ຮັບເງິນຄືນ ${fm(amt)} ກີບ?\nຕອບກັບມາໄດ້ເລີຍ 😊`;
+    else if(ns>old)t=`ສະບາຍດີ ${c.name} 🙏\nສິນຄ້າ "${nm}" ລາຄາຢູ່ຮ້ານປ່ຽນ ເປັນ ${fm(ns)} ກີບ/ອັນ (ເພີ່ມ ${fm((ns-old)*qty)} ກີບ)\n\nຍັງເອົາຢູ່ບໍ່? ຖ້າບໍ່ເອົາ ຈະຄືນເງິນ ${fm(amt)} ກີບ\nຕອບກັບມາໄດ້ເລີຍ 😊`;
+    else t=`ສະບາຍດີ ${c.name} 🙏\nຂ່າວດີ! ສິນຄ້າ "${nm}" ລາຄາຖືກລົງ ເປັນ ${fm(ns)} ກີບ/ອັນ\nຈະຄືນເງິນສ່ວນຕ່າງ ${fm((old-ns)*qty)} ກີບ ໃຫ້ເດີ້ 😊`;
+    msgs.push({name:c.name,phone:c.phone,text:t});
+    const byO={};for(const r of rows)(byO[r.o.id]=byO[r.o.id]||[]).push(r.k);
+    for(const oid in byO){const o=JSON.parse(JSON.stringify(oById(oid)));byO[oid].forEach(k=>{const it=o.items[k];
+      if(mode==="out")it.status="ask";else if(ns>old){it.status="ask";it.newSell=ns}else{it.sell=ns}});await safe(()=>put("orders",o))}}
+  if(mode==="price"&&p&&nw){await safe(()=>put("products",{...p,won:nw,sell:ns}))}
+  mMsg(mode==="out"?"❌ แจ้งของหมด":"💲 แจ้งราคาเปลี่ยน",msgs);render()}
+
+/* ---- 💰 summary ---- */
+function vSum(){
+  let sales=0,wonAll=0,items=0,got=0,miss=0;
+  for(const o of S.orders)for(const i of o.items||[]){if(!live(i))continue;sales+=n(i.sell)*n(i.qty);items+=n(i.qty);const p=pById(i.pid);if(p&&n(p.won))wonAll+=n(p.won)*n(i.qty);else miss++;if(i.status==="got"||i.status==="sent")got+=n(i.qty)}
+  const paid=S.customers.reduce((a,c)=>a+n(c.paid),0),owe=S.customers.filter(c=>cBal(c.id)<0),rf=S.customers.filter(c=>cBal(c.id)>0);
+  const profit=sales-costPer(wonAll);
+  return `<div class="stat">
+    <div><span>ยอดขายรวม</span><b>${kip(sales)}</b></div><div><span>กำไรโดยประมาณ</span><b style="color:var(--g)">${kip(profit)}</b></div>
+    <div><span>รับเงินแล้ว</span><b>${kip(paid)}</b></div><div><span>เงินวอนที่ใช้</span><b>${won(wonAll)}</b></div>
+    <div><span>ลูกค้า</span><b>${S.customers.length} คน</b></div><div><span>ซื้อได้แล้ว</span><b>${got} / ${items} ชิ้น</b></div></div>
+  ${miss?`<p class="note">⚠️ มี ${miss} รายการที่สินค้ายังไม่ใส่ราคาวอน กำไรอาจคลาดเคลื่อน</p>`:""}
+  <div class="card" style="margin-top:12px"><b>ค้างจ่าย</b>${owe.length?owe.map(c=>`<div class="li" data-act="open-c" data-id="${c.id}"><span class="nm">${esc(c.name)}<small>${esc(c.phone)}</small></span><span class="owe">${kip(-cBal(c.id))}</span></div>`).join(""):`<p class="note">ไม่มี 🎉</p>`}</div>
+  <div class="card"><b>ต้องคืนเงินลูกค้า</b>${rf.length?rf.map(c=>`<div class="li" data-act="open-c" data-id="${c.id}"><span class="nm">${esc(c.name)}<small>${esc(c.phone)}</small></span><span class="rf">${kip(cBal(c.id))}</span></div>`).join(""):`<p class="note">ไม่มี</p>`}</div>`}
+
+/* ---- settings ---- */
+function mSettings(){
+  const s=S.set;S.sdraft={qr:s.qr||""};
+  const f=(k,l,h,im="decimal")=>`<label>${l}</label><input inputmode="${im}" id="s_${k}" value="${esc(s[k])}">${h?`<p class="note">${h}</p>`:""}`;
+  modal(`<h2>⚙️ ตั้งค่า</h2>
+  <div class="mcard"><b>🏪 ร้าน (แสดงบนหน้าร้านให้ลูกค้า)</b>
+    ${f("shopName","ชื่อร้าน","","text")}${f("wa","เบอร์ WhatsApp ของคุณ","ลูกค้าจะส่งออเดอร์มาที่เบอร์นี้ เช่น 020 5xxx xxxx","tel")}
+    ${f("bank","ธนาคาร","เช่น BCEL One","text")}${f("accNo","เลขบัญชี","","text")}${f("accName","ชื่อบัญชี","","text")}
+    <label>QR รับเงิน</label><div class="row"><label class="padd" style="flex:none;width:96px" id="qrbox">${s.qr?`<img src="${s.qr}" style="width:92px;height:92px;object-fit:contain">`:`＋<small>รูป QR</small>`}<input type="file" accept="image/*" data-file="qr" hidden></label><span class="note">ถ่ายหรือแคปหน้าจอ QR จากแอปธนาคาร</span></div></div>
+  <div class="mcard"><b>💱 คิดราคา</b>
+    ${f("rate","1 วอน = กี่กีบ","เรทกลางตลาด (Wise) 7 พ.ย. 2026 ≈ 15.9 — แก้เป็นเรทที่แลกได้จริง")}
+    ${f("buffer","เผื่อค่าแลกเงิน (%)")}${f("fee","ค่าหิ้ว (%)")}${f("feeItem","ค่าหิ้วเพิ่มต่อชิ้น (กีบ)")}${f("round","ปัดราคาขึ้นทีละ (กีบ)")}
+    <p class="preview note" id="sx"></p>
+    <button class="btn sm ghost wide" data-act="reprice" style="margin-top:8px">🔄 คิดราคาขายใหม่ให้สินค้าทุกตัว</button></div>
+  <div class="mcard"><b>🗂 ระบบ</b><button class="btn sm wide" style="margin-top:8px" data-act="seed">📦 นำเข้าสินค้าเริ่มต้น ${S.products.length?"(มีสินค้าแล้ว "+S.products.length+" รายการ)":"56 รายการ"}</button>
+    <label class="btn sm ghost wide" style="margin-top:8px">📂 นำเข้าข้อมูลจากแอปเดิม (.json)<input type="file" accept=".json,application/json" data-file="import" hidden></label>
+    <button class="btn sm ghost wide" style="margin-top:8px" data-act="logout">ออกจากระบบ</button></div>
+  <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="close">ปิด</button><button class="btn" style="background:var(--g);color:#fff" data-act="save-set">บันทึก</button></div>`);
+  updSx()}
+function readSet(){const o={...S.set};for(const k in DEF){if(k==="qr")continue;const el=$("#s_"+k);if(el)o[k]=typeof DEF[k]==="number"?n(el.value):el.value.trim()}o.qr=S.sdraft?S.sdraft.qr:S.set.qr;return o}
+function updSx(){const el=$("#sx");if(el){const t=readSet();el.innerHTML=`ตัวอย่าง: ₩10,000 → ขาย <b>${kip(sellPrice(10000,t))}</b> (ต้นทุน ${kip(costPer(10000,t))})`}}
+function mRecv(c,refund){const b=Math.abs(cBal(c.id));
+  modal(`<h2>${refund?"↩️ คืนเงินให้":"💵 รับเงินจาก"} ${esc(c.name)}</h2><p class="note">${refund?"ต้องคืน":"ค้างอยู่"} ${kip(b)}</p>
+  <label>จำนวน (กีบ)</label><input id="rv" inputmode="numeric"><div class="chips"><button class="chip" data-act="rv-fill" data-v="${b}">ทั้งหมด ${kip(b)}</button></div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" data-act="close">ยกเลิก</button><button class="btn" style="background:var(--g);color:#fff" data-act="rv-ok" data-id="${c.id}" data-r="${refund?1:0}">บันทึก</button></div>`)}
+function mEditC(c){modal(`<h2>✏️ ข้อมูลลูกค้า</h2><label>ชื่อ</label><input id="ec_name" value="${esc(c.name)}"><label>เบอร์โทร</label><input id="ec_phone" inputmode="tel" value="${esc(c.phone)}"><label>หมายเหตุ</label><input id="ec_note" value="${esc(c.note)}">
+  <div class="row" style="margin-top:12px">${cOrders(c.id).length?"":`<button class="btn red" style="flex:none" data-act="del-c" data-id="${c.id}">🗑</button>`}<button class="btn ghost" data-act="close">ยกเลิก</button><button class="btn" style="background:var(--g);color:#fff" data-act="save-c" data-id="${c.id}">บันทึก</button></div>`)}
+function confirmBox(t,act,id){modal(`<h2>${t}</h2><div class="row" style="margin-top:14px"><button class="btn ghost" data-act="close">ไม่</button><button class="btn red" data-act="${act}" data-id="${id}">ใช่, ลบ</button></div>`)}
+
+/* ---------- events ---------- */
+document.addEventListener("input",e=>{
+  const t=e.target,d=S.draft;
+  if(t.id==="paste"){S.paste=t.value;return}
+  if(t.dataset.act==="search"||t.dataset.act==="psearch"){const k=t.dataset.act==="search"?"q":"pq";S[k]=t.value;const p=t.selectionStart;render();const s=$(`[data-act="${t.dataset.act}"]`);s.focus();s.setSelectionRange(p,p);return}
+  if(t.id==="pq")return updPlist();
+  if(t.id==="np_won"){const w=n(t.value);$("#np_pv").textContent=w?"ราคาขาย "+kip(sellPrice(w)):"";return}
+  if(t.id==="pf_won"||t.id==="pf_sell")return updPf();
+  if(t.id==="oos_won"){const w=n(t.value);$("#oos_pv").textContent=w?"ราคาขายใหม่ "+kip(sellPrice(w))+" /ชิ้น":"";return}
+  if(t.id&&t.id.startsWith("s_"))return updSx();
+  if(d&&t.dataset.d){d[t.dataset.d]=t.value;if(t.dataset.d==="name"||t.dataset.d==="phone")updCsug()}
+});
+document.addEventListener("change",async e=>{
+  const t=e.target,k=t.dataset.file;if(!k||!t.files||!t.files.length)return;
+  if(k==="import"){try{const d=JSON.parse(await t.files[0].text());closeModal();toast("กำลังนำเข้า…");await importData(d)}catch(err){toast("นำเข้าไม่สำเร็จ: "+(err.code||err.message||""))}return}
+  try{
+    if(k==="dph"){const d=S.draft;const fs=[...t.files].slice(0,4-d.slips.length);for(const f of fs){const im=await compress(f);const id=uid("f");PC["photos/"+id]=im;d.slips.push({id,isNew:true})}render()}
+    else if(k==="prodph"){const im=await compress(t.files[0],800,120000);S.pform.newPhoto=im;$("#pfph").firstChild.replaceWith(Object.assign(document.createElement("img"),{src:im,className:"th",style:"width:92px;height:92px"}))}
+    else if(k==="qr"){const im=await compress(t.files[0],700,150000);S.sdraft.qr=im;$("#qrbox").firstChild.replaceWith(Object.assign(document.createElement("img"),{src:im,style:"width:92px;height:92px;object-fit:contain"}))}
+    else if(k==="got"){const im=await compress(t.files[0]);const id=uid("f");toast("กำลังบันทึกรูป…");await safe(async()=>{await putPhoto("photos",id,im);await markGot(t.dataset.key,id)},"ได้ของแล้ว ✓")}
+  }catch(err){toast("เปิดรูปนี้ไม่ได้")}
+});
+document.addEventListener("click",async e=>{
+  const nb=e.target.closest("[data-tab]");if(nb){S.tab=nb.dataset.tab;S.cust=null;S.prod=null;render();scrollTo(0,0);return}
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const a=b.dataset.act,id=b.dataset.id,d=S.draft;
+  if(a==="close-bg"){if(e.target===b)closeModal();return}
+  if(a==="search"||a==="psearch")return;
+  switch(a){
+  case "settings":mSettings();break;
+  case "login":{const pr=new firebase.auth.GoogleAuthProvider();pr.setCustomParameters({prompt:"select_account"});try{await firebase.auth().signInWithPopup(pr)}catch(err){if(err.code==="auth/popup-blocked"||err.code==="auth/operation-not-supported-in-this-environment")firebase.auth().signInWithRedirect(pr);else toast("เข้าสู่ระบบไม่สำเร็จ: "+err.code)}break}
+  case "logout":closeModal();await firebase.auth().signOut();location.reload();break;
+  case "pd-ok":{const pd=S.pending.find(x=>x.id===id);if(!pd)return;S.draft=draftFromMsg("#OY"+JSON.stringify({n:pd.n,p:pd.p,m:pd.m,t:pd.t,i:pd.items}));const fid=uid("f");PC["photos/"+fid]=pd.slip;S.draft.slips=[{id:fid,isNew:true}];S.draft.pendingId=pd.id;S.draft.raw="";render();scrollTo(0,0);break}
+  case "seed":{closeModal();try{const r=await fetch("../products.json",{cache:"no-store"});const d=await r.json();toast("กำลังนำเข้า…");await importData({products:d.products.filter(x=>!pById(x.id))})}catch(err){toast("นำเข้าไม่สำเร็จ: "+(err.code||err.message||""))}break}
+  case "pd-no":confirmBox("ปฏิเสธออเดอร์นี้? (ลบทิ้ง)","pd-no-ok",id);break;
+  case "pd-no-ok":closeModal();await safe(()=>DB.collection("pending").doc(id).delete(),"ปฏิเสธแล้ว");break;
+  case "close":closeModal();break;
+  case "save-set":{const s=readSet();if(!s.rate){toast("ใส่เรทเงินก่อน");return}closeModal();await safe(()=>putSet(s),"บันทึกแล้ว");render();break}
+  case "reprice":{const s=readSet();await safe(()=>putSet(s));for(const p of S.products)if(n(p.won))await safe(()=>put("products",{...p,sell:sellPrice(p.won,s)}));toast("คิดราคาใหม่แล้ว · บอก Claude ให้อัปเดตหน้าร้าน");closeModal();render();break}
+  case "copy-link":{const t=`🛍️ ເປີດຮັບຫິ້ວ Olive Young ຈາກເກົາຫຼີ 🇰🇷\nເລືອກສິນຄ້າ ແລະ ສັ່ງຊື້ໄດ້ທີ່ນີ້ 👇\n${STORE_URL}`;try{await navigator.clipboard.writeText(t);toast("คัดลอกแล้ว ✓")}catch(err){toast("คัดลอกไม่ได้ กดค้างที่ลิงก์แทน")}break}
+  case "parse":{const t=S.paste.trim();if(!t){toast("วางข้อความก่อน");return}S.draft=draftFromMsg(t);if(!S.draft.parsed)toast("ไม่พบรหัสออเดอร์ — กรอกเอง");render();scrollTo(0,0);break}
+  case "manual":S.draft={oid:null,cid:null,name:"",phone:"",items:[],pay:"",note:"",slips:[],removed:[]};render();break;
+  case "draft-cancel":S.draft=null;render();break;
+  case "pick-c":d.cid=id;render();break;
+  case "unpick-c":{const c=cById(d.cid);d.cid=null;if(c&&!d.name){d.name=c.name;d.phone=c.phone}d.noAuto=true;render();break}
+  case "dq":{const it=d.items[+b.dataset.k];it.qty=Math.max(1,n(it.qty)+ +b.dataset.v);render();break}
+  case "drm":d.items.splice(+b.dataset.k,1);render();break;
+  case "dpay":d.pay=b.dataset.v;render();break;
+  case "ph-rm":{const p=d.slips.splice(+b.dataset.k,1)[0];if(p&&!p.isNew)d.removed.push(p.id);render();break}
+  case "pick-open":S.pick={mode:"add"};mPick();break;
+  case "pick-p":await applyPick(pById(id));break;
+  case "np-add":{const nm=$("#np_name").value.trim(),w=n($("#np_won").value);if(!nm){toast("ใส่ชื่อสินค้า");return}
+    let p=findProd(nm);if(!p){p={id:uid("p"),name:nm,won:w,sell:sellPrice(w),photo:"",createdAt:Date.now()};if(!await safe(()=>put("products",p)))return}await applyPick(p);break}
+  case "draft-save":await saveDraft(b);break;
+  case "cf":S.cf=b.dataset.v;render();break;
+  case "open-c":S.tab="cust";S.cust=id;S.prod=null;render();scrollTo(0,0);break;
+  case "back":S.cust=null;render();break;
+  case "back-p":S.prod=null;render();break;
+  case "recv":mRecv(cById(id),false);break;
+  case "refund":mRecv(cById(id),true);break;
+  case "rv-fill":$("#rv").value=b.dataset.v;break;
+  case "rv-ok":{const v=n($("#rv").value);if(!v){toast("ใส่จำนวนเงิน");return}const c=cById(id);closeModal();await safe(()=>put("customers",{...c,paid:n(c.paid)+(b.dataset.r==="1"?-v:v)}),b.dataset.r==="1"?"บันทึกการคืนเงินแล้ว":"รับเงิน "+kip(v)+" แล้ว");render();break}
+  case "bill":{const c=cById(id);mMsg("📄 บิล (ภาษาลาว)",[{name:c.name,phone:c.phone,text:billText(c)}]);break}
+  case "copy":{const t=$("#"+b.dataset.t);try{await navigator.clipboard.writeText(t.value);toast("คัดลอกแล้ว ✓")}catch(err){t.select();toast("กดค้างที่ข้อความ แล้วเลือกคัดลอก")}break}
+  case "add-for":{const c=cById(id);S.draft={oid:null,cid:c.id,name:c.name,phone:c.phone,items:[],pay:"",note:"",slips:[],removed:[]};S.tab="in";render();scrollTo(0,0);break}
+  case "edit-c":mEditC(cById(id));break;
+  case "save-c":{const c=cById(id),nm=$("#ec_name").value.trim();if(!nm){toast("ใส่ชื่อ");return}closeModal();await safe(()=>put("customers",{...c,name:nm,phone:$("#ec_phone").value.trim(),note:$("#ec_note").value.trim()}),"บันทึกแล้ว");render();break}
+  case "del-c":closeModal();await safe(()=>del("customers",id),"ลบแล้ว");S.cust=null;render();break;
+  case "edit-o":{const o=oById(id),c=cById(o.customerId);S.draft={oid:o.id,cid:o.customerId,name:c?c.name:"",phone:c?c.phone:"",items:JSON.parse(JSON.stringify(o.items)),pay:"",note:o.note||"",slips:(o.photoIds||[]).map(x=>({id:x})),removed:[]};S.tab="in";render();scrollTo(0,0);break}
+  case "del-o":confirmBox("ลบออเดอร์นี้?","del-o-ok",id);break;
+  case "del-o-ok":{const o=oById(id);closeModal();if(!o)return;await safe(()=>del("orders",id),"ลบแล้ว");for(const p of o.photoIds||[])await delPhoto("photos",p);render();break}
+  case "item":mItem(oById(id),+b.dataset.k);break;
+  case "set-st":{const o=JSON.parse(JSON.stringify(oById(id)));o.items[+b.dataset.k].status=b.dataset.v;closeModal();await safe(()=>put("orders",o),"เปลี่ยนเป็น "+ST[b.dataset.v]);render();break}
+  case "accept-new":{const o=JSON.parse(JSON.stringify(oById(id)));const it=o.items[+b.dataset.k];it.sell=it.newSell;delete it.newSell;it.status="wait";closeModal();await safe(()=>put("orders",o),"ใช้ราคาใหม่แล้ว · ลูกค้าต้องโอนส่วนต่าง");render();break}
+  case "replace":S.pick={mode:"replace",oid:id,k:+b.dataset.k};mPick();break;
+  case "view":case "view-p":{const im=b.tagName==="IMG"?b:b.querySelector("img");if(im&&im.src)modal(`<img class="big-img" src="${im.src}"><button class="btn ghost wide" style="margin-top:10px" data-act="close">ปิด</button>`);break}
+  case "new-p":mProd(null);break;
+  case "open-p":S.prod=id;render();scrollTo(0,0);break;
+  case "edit-p":mProd(pById(id));break;
+  case "save-p":{const f=S.pform,nm=$("#pf_name").value.trim(),w=n($("#pf_won").value),s=n($("#pf_sell").value)||sellPrice(w);
+    if(!nm){toast("ใส่ชื่อสินค้า");return}const dup=findProd(nm);if(dup&&dup.id!==f.id){toast("มีสินค้าชื่อนี้แล้ว");return}
+    b.disabled=true;const old=f.id&&pById(f.id);let photo=f.photo;
+    const ok=await safe(async()=>{if(f.newPhoto){photo=uid("i");await putPhoto("pphotos",photo,f.newPhoto);if(f.photo)await delPhoto("pphotos",f.photo)}
+      await put("products",{...(old||{createdAt:Date.now()}),id:f.id||uid("p"),name:nm,won:w,sell:s,photo,cat:$("#pf_cat").value})},"บันทึกสินค้าแล้ว");
+    if(ok){closeModal();render()}else b.disabled=false;break}
+  case "del-p":{const p=pById(id);closeModal();await safe(()=>del("products",id),"ลบแล้ว");if(p&&p.photo)await delPhoto("pphotos",p.photo);S.prod=null;render();break}
+  case "got":await safe(()=>markGot(b.dataset.key),"ได้ของแล้ว ✓");break;
+  case "oos":mOos(b.dataset.key);break;
+  case "oos-go":await oosGo(b.dataset.key,b.dataset.v);break;
+  }
+});
+render();init();
+</script>
+</body>
+</html>

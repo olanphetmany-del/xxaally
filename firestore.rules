@@ -1,0 +1,80 @@
+rules_version = '2';
+// ຮັບຫິ້ວ Olive Young — Firestore security rules
+// Paste into Firebase console → Firestore Database → Rules → Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner() {
+      return request.auth != null
+        && request.auth.token.email == 'olan.phetmany@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+    function signedIn() { return request.auth != null; }
+    function today() { return int(request.time.toMillis() / 86400000); }
+
+    // ---------- public catalog ----------
+    match /products/{id}      { allow read: if true; allow write: if isOwner(); }
+    match /pphotos/{id}       { allow read: if true; allow write: if isOwner(); }
+    match /settings/shop      { allow read: if true; allow write: if isOwner(); }
+
+    // ---------- owner-only data ----------
+    match /settings/pricing   { allow read, write: if isOwner(); }
+    match /customers/{id}     { allow read, write: if isOwner(); }
+    match /orders/{id}        { allow read, write: if isOwner(); }
+    match /photos/{id}        { allow read, write: if isOwner(); }
+
+    // ---------- customer orders (wait for owner to confirm) ----------
+    // A customer can only CREATE a pending order, never read/edit any.
+    // It must be written in the same batch as limits/{uid} and phoneDay/{pk_day}.
+    match /pending/{id} {
+      allow read, update, delete: if isOwner();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid','n','p','pk','m','t','items','slip','createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.n is string && request.resource.data.n.size() > 0 && request.resource.data.n.size() <= 60
+        && request.resource.data.p is string && request.resource.data.p.matches('^[0-9]{8,13}$')
+        && request.resource.data.pk is string && request.resource.data.pk.matches('^[0-9]{8}$')
+        && request.resource.data.p.matches('.*' + request.resource.data.pk + '$')
+        && request.resource.data.m is string && request.resource.data.m.size() <= 300
+        && request.resource.data.t is number && request.resource.data.t > 0
+        && request.resource.data.items is list
+        && request.resource.data.items.size() > 0 && request.resource.data.items.size() <= 40
+        && request.resource.data.slip is string
+        && request.resource.data.slip.size() < 450000
+        && request.resource.data.slip.matches('^data:image/jpeg;base64,.*')
+        // device limit: limits/{uid} updated in this same batch
+        && getAfter(/databases/$(database)/documents/limits/$(request.auth.uid)).data.last == request.time
+        // phone limit: phoneDay counter updated in this same batch
+        && getAfter(/databases/$(database)/documents/phoneDay/$(request.resource.data.pk + '_' + string(today()))).data.last == request.time;
+    }
+
+    // 1 order per 60 seconds per device
+    match /limits/{uid} {
+      allow read, delete: if isOwner();
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['last'])
+        && request.resource.data.last == request.time;
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['last'])
+        && request.resource.data.last == request.time
+        && resource.data.last < request.time - duration.value(60, 's');
+    }
+
+    // max 3 pending orders per phone number per day
+    match /phoneDay/{key} {
+      allow read, delete: if isOwner();
+      allow create: if signedIn()
+        && key.matches('^[0-9]{8}_' + string(today()) + '$')
+        && request.resource.data.keys().hasOnly(['n','last'])
+        && request.resource.data.n == 1
+        && request.resource.data.last == request.time;
+      allow update: if signedIn()
+        && key.matches('^[0-9]{8}_' + string(today()) + '$')
+        && request.resource.data.keys().hasOnly(['n','last'])
+        && request.resource.data.n == resource.data.n + 1
+        && request.resource.data.n <= 3
+        && request.resource.data.last == request.time;
+    }
+  }
+}
