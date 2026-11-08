@@ -223,7 +223,7 @@ function photoRow(ids){return ids&&ids.length?`<div class="ph sm">${ids.map(p=>`
 /* ---- 📥 in ---- */
 function vIn(){
   if(S.draft)return vDraft();
-  return `<div id="pend">${pendHtml()}</div>${S.products.length?"":`<div class="banner">ยังไม่มีสินค้าในระบบใหม่ <button class="btn sm" data-act="seed">📦 นำเข้าสินค้า 56 รายการ</button></div>`}
+  return `<div id="pend">${pendHtml()}</div>${S.products.length?"":`<div class="banner">ยังไม่มีสินค้าในระบบใหม่ <button class="btn sm" data-act="seed">📦 นำเข้าสินค้า 55 รายการ</button></div>`}
   <div class="card"><h2 class="h">📥 วางออเดอร์จาก WhatsApp</h2>
     <p class="note">ลูกค้าสั่งจากหน้าร้าน → ข้อความส่งเข้า WhatsApp คุณ → กดค้างที่ข้อความ คัดลอก แล้ววางที่นี่</p>
     <textarea id="paste" rows="5" placeholder="วางข้อความที่นี่…" style="margin-top:8px">${esc(S.paste)}</textarea>
@@ -470,7 +470,7 @@ function mSettings(){
     ${f("buffer","เผื่อค่าแลกเงิน (%)")}${f("feeThb","ค่าหิ้วต่อชิ้น (บาท)","ปกติ 200 บาท ต่อ 1 ชิ้น")}${f("thb","1 บาท = กี่กีบ","เรทกลางตลาด พ.ย. 2026 ≈ 640–690 · แก้เป็นเรทที่แลกได้จริง")}${f("fee","ค่าหิ้วเพิ่มเป็น % (ถ้าไม่ใช้ใส่ 0)")}${f("minFee","ค่าหิ้วขั้นต่ำต่อชิ้น (กีบ)","ของถูก % ได้น้อยกว่านี้ จะคิดเท่านี้แทน")}${f("feeItem","ค่าหิ้วบวกเพิ่มทุกชิ้น (กีบ)","ปกติ 0")}${f("kg","ค่าขนเข้าลาว ต่อ 1 กก. (กีบ)","0 = ไม่คิด · น้ำหนักสินค้าประมาณตามหมวด หรือใส่เองในหน้าสินค้า")}${f("round","ปัดราคาขึ้นทีละ (กีบ)")}
     <p class="preview note" id="sx"></p>
     <button class="btn sm ghost wide" data-act="reprice" style="margin-top:8px">🔄 คิดราคาขายใหม่ให้สินค้าทุกตัว</button></div>
-  <div class="mcard"><b>🗂 ระบบ</b><button class="btn sm wide" style="margin-top:8px" data-act="seed">📦 นำเข้าสินค้าเริ่มต้น ${S.products.length?"(มีสินค้าแล้ว "+S.products.length+" รายการ)":"56 รายการ"}</button>
+  <div class="mcard"><b>🗂 ระบบ</b><button class="btn sm wide" style="margin-top:8px" data-act="seed">📦 นำเข้าสินค้าเริ่มต้น ${S.products.length?"(มีสินค้าแล้ว "+S.products.length+" รายการ)":"55 รายการ"}</button>
     <label class="btn sm ghost wide" style="margin-top:8px">📂 นำเข้าข้อมูลจากแอปเดิม (.json)<input type="file" accept=".json,application/json" data-file="import" hidden></label>
     <button class="btn sm ghost wide" style="margin-top:8px" data-act="logout">ออกจากระบบ</button></div>
   <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="close">ปิด</button><button class="btn" style="background:var(--g);color:#fff" data-act="save-set">บันทึก</button></div>`);
