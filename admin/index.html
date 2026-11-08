@@ -474,7 +474,7 @@ function mSettings(){
     <button class="btn sm ghost wide" data-act="reprice" style="margin-top:8px">🔄 คิดราคาขายใหม่ให้สินค้าทุกตัว</button></div>
   <div class="mcard"><b>🗂 ระบบ</b><button class="btn sm wide" style="margin-top:8px" data-act="seed">📦 นำเข้าสินค้าเริ่มต้น ${S.products.length?"(มีสินค้าแล้ว "+S.products.length+" รายการ)":"55 รายการ"}</button>
     <label class="btn sm ghost wide" style="margin-top:8px">📂 นำเข้าข้อมูลจากแอปเดิม (.json)<input type="file" accept=".json,application/json" data-file="import" hidden></label>
-    <button class="btn sm ghost wide" style="margin-top:8px" data-act="logout">ออกจากระบบ</button></div>
+    <button class="btn sm red wide" style="margin-top:8px" data-act="wipe">🧹 ล้างข้อมูลทดลอง (ลูกค้า+ออเดอร์ทั้งหมด)</button><button class="btn sm ghost wide" style="margin-top:8px" data-act="logout">ออกจากระบบ</button></div>
   <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="close">ปิด</button><button class="btn" style="background:var(--g);color:#fff" data-act="save-set">บันทึก</button></div>`);
   updSx()}
 function readSet(){const o={...S.set};for(const k in DEF){if(k==="qr")continue;const el=$("#s_"+k);if(el)o[k]=typeof DEF[k]==="number"?n(el.value):el.value.trim()}o.qr=S.sdraft?S.sdraft.qr:S.set.qr;return o}
@@ -520,7 +520,9 @@ document.addEventListener("click",async e=>{
   case "login":{const pr=new firebase.auth.GoogleAuthProvider();pr.setCustomParameters({prompt:"select_account"});try{await firebase.auth().signInWithPopup(pr)}catch(err){if(err.code==="auth/popup-blocked")toast("เบราว์เซอร์บล็อกป๊อปอัป · กดอนุญาตป๊อปอัปแล้วลองใหม่");else if(err.code!=="auth/popup-closed-by-user"&&err.code!=="auth/cancelled-popup-request")toast("เข้าสู่ระบบไม่สำเร็จ: "+err.code)}break}
   case "logout":closeModal();await firebase.auth().signOut();location.reload();break;
   case "pd-ok":{const pd=S.pending.find(x=>x.id===id);if(!pd)return;S.draft=draftFromMsg("#OY"+JSON.stringify({n:pd.n,p:pd.p,m:pd.m,t:pd.t,i:(pd.items||[]).map(i=>[i.pid,i.name,i.qty,i.sell])}));const fid=uid("f");PC["photos/"+fid]=pd.slip;S.draft.slips=[{id:fid,isNew:true}];S.draft.pendingId=pd.id;S.draft.raw="";render();scrollTo(0,0);break}
-  case "seed":{closeModal();try{const r=await fetch("../products.json",{cache:"no-store"});const d=await r.json();toast("กำลังนำเข้า…");await importData({products:d.products.filter(x=>!pById(x.id))})}catch(err){toast("นำเข้าไม่สำเร็จ: "+(err.code||err.message||""))}break}
+  case "wipe":{closeModal();confirmBox(`ลบลูกค้า ${S.customers.length} คน · ออเดอร์ ${S.orders.length} รายการ · ออเดอร์รอยืนยัน ${S.pending.length} รายการ ทั้งหมด?<br><small class="note">สินค้าและการตั้งค่าจะไม่ถูกลบ · ลบแล้วกู้คืนไม่ได้</small>`,"wipe-ok","");break}
+      case "wipe-ok":{closeModal();toast("กำลังลบ…");try{let c=0;for(const cu of S.customers)if(cu.tk)await DB.doc("track/"+cu.tk).delete().catch(()=>{});for(const col of ["orders","customers","pending","photos","limits","phoneDay"]){const sn=await DB.collection(col).get();for(let a=0;a<sn.docs.length;a+=400){const b=DB.batch();sn.docs.slice(a,a+400).forEach(d=>b.delete(d.ref));await b.commit()}c+=sn.size}S.cust=null;toast("ลบแล้ว "+c+" รายการ ✓");render()}catch(err){toast("ลบไม่สำเร็จ: "+(err.code||err.message))}break}
+      case "seed":{closeModal();try{const r=await fetch("../products.json",{cache:"no-store"});const d=await r.json();toast("กำลังนำเข้า…");await importData({products:d.products.filter(x=>!pById(x.id))})}catch(err){toast("นำเข้าไม่สำเร็จ: "+(err.code||err.message||""))}break}
   case "pd-no":confirmBox("ปฏิเสธออเดอร์นี้? (ลบทิ้ง)","pd-no-ok",id);break;
   case "pd-no-ok":closeModal();await safe(()=>DB.collection("pending").doc(id).delete(),"ปฏิเสธแล้ว");break;
   case "close":closeModal();break;
