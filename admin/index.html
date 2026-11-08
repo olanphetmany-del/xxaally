@@ -140,6 +140,13 @@ const live=i=>i.status!=="refund";
 function cOrders(cid){return S.orders.filter(o=>o.customerId===cid).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))}
 function cItems(cid){return cOrders(cid).flatMap(o=>(o.items||[]).map((i,k)=>({o,k,i})))}
 function cTotal(cid){return cItems(cid).reduce((a,{i})=>a+(live(i)?n(i.sell)*n(i.qty):0),0)}
+function newTk(){const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
+function trkUrl(c){return c&&c.tk?STORE_URL+"my.html?t="+c.tk:""}
+function trackData(c){const O=cOrders(c.id);return{nm:c.name||"",total:cTotal(c.id),paid:n(c.paid),bal:cBal(c.id),
+  orders:O.map(o=>({d:o.createdAt||0,items:(o.items||[]).map(i=>{const p=pById(i.pid);const r={n:pName(i),q:n(i.qty),s:n(i.sell),st:i.status||"wait",img:p&&p.img?p.img:""};if(i.newSell)r.ns=n(i.newSell);return r})}))}}
+const TH={};let trkT=null;
+function syncTracks(){clearTimeout(trkT);trkT=setTimeout(async()=>{if(!DB||!S.loaded)return;for(const c of S.customers){if(!c.tk)continue;const d=trackData(c),h=JSON.stringify(d);if(TH[c.tk]===h)continue;TH[c.tk]=h;try{await DB.doc("track/"+c.tk).set({...d,up:Date.now()})}catch(e){delete TH[c.tk];console.warn("track",e)}}},1500)}
+async function ensureTk(c){if(c.tk)return c;const x={...c,tk:newTk()};await put("customers",x);return cById(c.id)||x}
 function cBal(cid){const c=cById(cid);return n(c&&c.paid)-cTotal(cid)} // <0 customer owes, >0 we must refund
 function pName(i){const p=pById(i.pid);return p?p.name:i.name}
 function pKey(i){return i.pid&&pById(i.pid)?i.pid:"n:"+norm(i.name)}
@@ -186,6 +193,7 @@ function start(){
   const sub=c=>DB.collection(c).onSnapshot(snap=>{S[c]=snap.docs.map(d=>({...d.data(),id:d.id}));S.ld[c]=1;
       if(!S.loaded&&S.ld.customers&&S.ld.products&&S.ld.orders){S.loaded=true;clearTimeout(timer);syncLabel()}
       if(c==="pending"){updBadge();if(S.tab==="in"&&!S.draft)updPend();return}
+      if(c==="customers"||c==="orders"||c==="products")syncTracks();
       render(true)},e=>{clearTimeout(timer);$("#sync").textContent="⚠️ ซิงก์ไม่ได้ ("+e.code+")"});
   ["customers","orders","products","pending"].forEach(sub);
   DB.doc("settings/shop").onSnapshot(d=>{if(d.exists){S.set={...S.set,...d.data()};render(true)}},()=>{});
@@ -330,7 +338,7 @@ function vCustD(c){
   <div class="card"><h2 class="h">👤 ${esc(c.name)}</h2><div class="sub">📞 ${esc(c.phone)||"ไม่มีเบอร์"}${c.note?" · "+esc(c.note):""}</div>
     <div class="stat3"><div><span>ยอดรวม</span><b>${kip(cTotal(c.id))}</b></div><div><span>จ่ายแล้ว</span><b>${kip(n(c.paid))}</b></div><div><span>${b<0?"ค้างจ่าย":b>0?"ต้องคืนเงิน":"สถานะ"}</span><b class="${b<0?"owe":b>0?"rf":"ok"}">${b?kip(Math.abs(b)):"✓ ครบ"}</b></div></div>
     <div class="acts">${b<0?`<button class="btn sm" data-act="recv" data-id="${c.id}">💵 รับเงิน</button>`:""}${b>0?`<button class="btn sm amb" data-act="refund" data-id="${c.id}">↩️ คืนเงินแล้ว</button>`:""}
-      <button class="btn sm" data-act="bill" data-id="${c.id}">📄 บิล</button><button class="btn sm" data-act="add-for" data-id="${c.id}">➕ สั่งเพิ่ม</button><button class="btn sm ghost" data-act="edit-c" data-id="${c.id}">✏️ ข้อมูล</button></div></div>
+      <button class="btn sm" data-act="bill" data-id="${c.id}">📄 บิล</button><button class="btn sm" data-act="trk" data-id="${c.id}">🔗 ลิงก์ประวัติ</button><button class="btn sm" data-act="add-for" data-id="${c.id}">➕ สั่งเพิ่ม</button><button class="btn sm ghost" data-act="edit-c" data-id="${c.id}">✏️ ข้อมูล</button></div></div>
   ${O.map(o=>`<div class="card"><div class="row"><b>🧾 ${dstr(o.createdAt)}</b><span class="sub" style="text-align:right">${esc(o.note)}</span></div>
     ${(o.items||[]).map((i,k)=>`<div class="li">${thumb(i.pid)}<div class="nm">${esc(pName(i))} × ${n(i.qty)}<small>${kip(n(i.sell)*n(i.qty))}${i.newSell?` · ราคาใหม่ ${kip(i.newSell)}/ชิ้น`:""}</small></div><button class="st ${i.status}" data-act="item" data-id="${o.id}" data-k="${k}">${ST[i.status]||i.status} ▾</button></div>`).join("")}
     ${photoRow(o.photoIds)}
@@ -338,7 +346,7 @@ function vCustD(c){
 function billText(c){
   const L=cItems(c.id).map(({i})=>`• ${pName(i)} x${n(i.qty)} = ${fm(n(i.sell)*n(i.qty))} ກີບ${i.status==="refund"?" (ຍົກເລີກ)":" · "+STL[i.status]}`).join("\n");
   const b=cBal(c.id);
-  return `🧾 ບິນຮັບຫິ້ວ Olive Young\nລູກຄ້າ: ${c.name}\n\n${L}\n\nລວມ: ${fm(cTotal(c.id))} ກີບ\nຈ່າຍແລ້ວ: ${fm(n(c.paid))} ກີບ\n${b<0?`ຄ້າງຈ່າຍ: ${fm(-b)} ກີບ`:b>0?`ຈະຄືນເງິນໃຫ້: ${fm(b)} ກີບ`:"✅ ຈ່າຍຄົບແລ້ວ"}\n\nຂອບໃຈຫຼາຍໆ 🙏`}
+  return `🧾 ບິນຮັບຫິ້ວ Olive Young\nລູກຄ້າ: ${c.name}\n\n${L}\n\nລວມ: ${fm(cTotal(c.id))} ກີບ\nຈ່າຍແລ້ວ: ${fm(n(c.paid))} ກີບ\n${b<0?`ຄ້າງຈ່າຍ: ${fm(-b)} ກີບ`:b>0?`ຈະຄືນເງິນໃຫ້: ${fm(b)} ກີບ`:"✅ ຈ່າຍຄົບແລ້ວ"}${c.tk?`\n\n🔗 ເບິ່ງອໍເດີທັງໝົດ: ${trkUrl(c)}`:""}\n\nຂອບໃຈຫຼາຍໆ 🙏`}
 function mMsg(title,list){ // list: [{name,phone,text}]
   modal(`<h2>${title}</h2><p class="note">คัดลอก หรือกดเปิด WhatsApp ส่งให้ลูกค้าแต่ละคน</p>
   ${list.map((m,x)=>`<div class="mcard"><b>${esc(m.name)}</b> <span class="sub">${esc(m.phone)}</span><textarea class="msg" id="msg${x}" readonly>${esc(m.text)}</textarea>
@@ -532,12 +540,14 @@ document.addEventListener("click",async e=>{
   case "refund":mRecv(cById(id),true);break;
   case "rv-fill":$("#rv").value=b.dataset.v;break;
   case "rv-ok":{const v=n($("#rv").value);if(!v){toast("ใส่จำนวนเงิน");return}const c=cById(id);closeModal();await safe(()=>put("customers",{...c,paid:n(c.paid)+(b.dataset.r==="1"?-v:v)}),b.dataset.r==="1"?"บันทึกการคืนเงินแล้ว":"รับเงิน "+kip(v)+" แล้ว");render();break}
-  case "bill":{const c=cById(id);mMsg("📄 บิล (ภาษาลาว)",[{name:c.name,phone:c.phone,text:billText(c)}]);break}
+  case "trk":{let c=cById(id);try{c=await ensureTk(c)}catch(err){toast("สร้างลิงก์ไม่สำเร็จ: "+(err.code||err.message));break}syncTracks();
+        mMsg("🔗 ลิงก์ประวัติออเดอร์",[{name:c.name,phone:c.phone,text:`ສະບາຍດີ ${c.name} 🙏\nເບິ່ງອໍເດີ ແລະ ສະຖານະສິນຄ້າທັງໝົດຂອງທ່ານໄດ້ທີ່ລິ້ງນີ້ (ລິ້ງສ່ວນຕົວ ກະລຸນາຢ່າແບ່ງປັນ):\n${trkUrl(c)}`}]);break}
+      case "bill":{const c=cById(id);mMsg("📄 บิล (ภาษาลาว)",[{name:c.name,phone:c.phone,text:billText(c)}]);break}
   case "copy":{const t=$("#"+b.dataset.t);try{await navigator.clipboard.writeText(t.value);toast("คัดลอกแล้ว ✓")}catch(err){t.select();toast("กดค้างที่ข้อความ แล้วเลือกคัดลอก")}break}
   case "add-for":{const c=cById(id);S.draft={oid:null,cid:c.id,name:c.name,phone:c.phone,items:[],pay:"",note:"",slips:[],removed:[]};S.tab="in";render();scrollTo(0,0);break}
   case "edit-c":mEditC(cById(id));break;
   case "save-c":{const c=cById(id),nm=$("#ec_name").value.trim();if(!nm){toast("ใส่ชื่อ");return}closeModal();await safe(()=>put("customers",{...c,name:nm,phone:$("#ec_phone").value.trim(),note:$("#ec_note").value.trim()}),"บันทึกแล้ว");render();break}
-  case "del-c":closeModal();await safe(()=>del("customers",id),"ลบแล้ว");S.cust=null;render();break;
+  case "del-c":{const dc=cById(id);if(dc&&dc.tk&&DB)DB.doc("track/"+dc.tk).delete().catch(()=>{})}closeModal();await safe(()=>del("customers",id),"ลบแล้ว");S.cust=null;render();break;
   case "edit-o":{const o=oById(id),c=cById(o.customerId);S.draft={oid:o.id,cid:o.customerId,name:c?c.name:"",phone:c?c.phone:"",items:JSON.parse(JSON.stringify(o.items)),pay:"",note:o.note||"",slips:(o.photoIds||[]).map(x=>({id:x})),removed:[]};S.tab="in";render();scrollTo(0,0);break}
   case "del-o":confirmBox("ลบออเดอร์นี้?","del-o-ok",id);break;
   case "del-o-ok":{const o=oById(id);closeModal();if(!o)return;await safe(()=>del("orders",id),"ลบแล้ว");for(const p of o.photoIds||[])await delPhoto("photos",p);render();break}

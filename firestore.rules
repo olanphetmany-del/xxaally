@@ -23,6 +23,10 @@ service cloud.firestore {
     match /orders/{id}        { allow read, write: if isOwner(); }
     match /photos/{id}        { allow read, write: if isOwner(); }
 
+    // ---------- customer history links (my.html?t=TOKEN) ----------
+    // Anyone holding the secret token can GET that one doc; nobody can LIST them.
+    match /track/{t}          { allow get: if true; allow list: if false; allow write: if isOwner(); }
+
     // ---------- customer orders (wait for owner to confirm) ----------
     // A customer can only CREATE a pending order, never read/edit any.
     // It must be written in the same batch as limits/{uid} and phoneDay/{pk_day}.
