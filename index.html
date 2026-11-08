@@ -106,7 +106,7 @@ const feeP=p=>Math.min(+p.fee||0,+p.sell||0),baseP=p=>(+p.sell||0)-feeP(p);
 const feeT=()=>lines().reduce((a,l)=>a+feeP(l.p)*l.q,0),boxes=()=>lines().reduce((a,l)=>a+l.q,0);
 $("#shop").textContent=S.shopName||"ຮັບຫິ້ວ Olive Young";
 function card(p){const q=cart[p.id]||0;
-  return `<div class="p">${p.best&&curCat!=="x"&&p._r?`<span class="rk ${p.best<=3?"t3":""}">${p.best}</span>`:""}<div class="img">${p.img?`<img src="${p.img}" alt="" loading="lazy">`:p.photo?`<img data-ph="${esc(p.photo)}" alt="">`:"🧴"}</div><div class="b"><div class="nm">${esc(p.name)}</div><div class="pw">${fm(p.sell)} ກີບ</div><div class="pr">${feeP(p)?`ສິນຄ້າ ${fm(baseP(p))} + ຄ່າຫິ້ວ ${fm(feeP(p))}<br>`:""}${p.won?`🇰🇷 ₩${fm(p.won)}`:"&nbsp;"}</div>
+  return `<div class="p">${p.best&&curCat!=="x"&&p._r?`<span class="rk ${p.best<=3?"t3":""}">${p.best}</span>`:""}<div class="img">${p.img?`<img src="${p.img}" alt="" loading="lazy">`:p.photo?`<img data-ph="${esc(p.photo)}" alt="">`:"🧴"}</div><div class="b"><div class="nm">${esc(p.name)}</div><div class="pw">${fm(p.sell)} ກີບ</div><div class="pr">ລວມຄ່າຫິ້ວແລ້ວ${p.won?`<br>🇰🇷 ₩${fm(p.won)}`:""}</div>
   ${q?`<div class="qty"><button data-a="m" data-id="${p.id}">−</button><b>${q}</b><button data-a="p" data-id="${p.id}">+</button></div>`:`<button class="add" data-a="p" data-id="${p.id}">+ ເພີ່ມ</button>`}</div></div>`}
 const CATS=[["skin","💧 ສະກິນແຄຣ"],["mask","🩹 ມາສກ໌ & ແຜ່ນແປະ"],["clean","🫧 ຄລີນຊິ່ງ"],["sun","☀️ ກັນແດດ"],["makeup","💄 ເມກອັບ"],["nail","💅 ເລັບ"],["body","🧴 ບໍດີ້ & ມື"],["hair","💇 ຜົມ"],["other","✨ ອື່ນໆ"]];
 let curCat="all";
@@ -131,16 +131,15 @@ function render(){
 function msgText(){
   const L=lines();
   const tag={v:1,n:form.n.trim(),p:form.p.trim(),m:form.m.trim(),t:total(),i:L.map(l=>[l.p.id,l.p.name,l.q,l.p.sell])};
-  return `🛍️ ອໍເດີ Olive Young\nຊື່: ${form.n.trim()}\nເບີ: ${form.p.trim()}\n————\n${L.map(l=>`• ${l.p.name} x${l.q} = ${fm(l.p.sell*l.q)} ກີບ`).join("\n")}\n————${feeT()?`\nລາຄາສິນຄ້າ: ${fm(total()-feeT())} ກີບ\nຄ່າຫິ້ວ (${boxes()} ກ່ອງ): ${fm(feeT())} ກີບ`:""}\nລວມໂອນ: ${fm(total())} ກີບ${form.m.trim()?`\nໝາຍເຫດ: ${form.m.trim()}`:""}\n📎 ຂ້ອຍໂອນເງິນແລ້ວ ຈະສົ່ງສະລິບຕາມມາ\n\n#OY${JSON.stringify(tag)}`;
+  return `🛍️ ອໍເດີ Olive Young\nຊື່: ${form.n.trim()}\nເບີ: ${form.p.trim()}\n————\n${L.map(l=>`• ${l.p.name} x${l.q} = ${fm(l.p.sell*l.q)} ກີບ`).join("\n")}\n————\nລວມ: ${fm(total())} ກີບ (ລວມຄ່າຫິ້ວແລ້ວ)${form.m.trim()?`\nໝາຍເຫດ: ${form.m.trim()}`:""}\n📎 ຂ້ອຍໂອນເງິນແລ້ວ ຈະສົ່ງສະລິບຕາມມາ\n\n#OY${JSON.stringify(tag)}`;
 }
 function waHref(){const w=waNum(S.wa);return w?`https://wa.me/${w}?text=${encodeURIComponent(msgText())}`:""}
 function checkout(){
   const L=lines();
   $("#layer").innerHTML=`<div class="modal" data-a="bg"><div class="sheet">
   <h2>🛒 ກະຕ່າຂອງທ່ານ</h2>
-  ${L.map(l=>`<div class="li"><span>${esc(l.p.name)}<br><b>${fm(l.p.sell*l.q)} ກີບ</b>${feeP(l.p)?`<small class="brk">ສິນຄ້າ ${fm(baseP(l.p)*l.q)} + ຄ່າຫິ້ວ ${fm(feeP(l.p)*l.q)}</small>`:""}</span><div class="qty"><button data-a="m" data-id="${l.p.id}">−</button><b>${l.q}</b><button data-a="p" data-id="${l.p.id}">+</button></div><button class="rmx" data-a="rm" data-id="${l.p.id}" aria-label="ລົບ">✕</button></div>`).join("")}
-  ${feeT()?`<div class="sub2"><span>ລາຄາສິນຄ້າ</span><span>${fm(total()-feeT())} ກີບ</span></div><div class="sub2"><span>ຄ່າຫິ້ວ (${boxes()} ກ່ອງ)</span><span>${fm(feeT())} ກີບ</span></div>`:""}
-  <div class="tot"><span>ລວມທີ່ຕ້ອງໂອນ</span><span>${fm(total())} ກີບ</span></div>
+  ${L.map(l=>`<div class="li"><span>${esc(l.p.name)}<br><b>${fm(l.p.sell*l.q)} ກີບ</b></span><div class="qty"><button data-a="m" data-id="${l.p.id}">−</button><b>${l.q}</b><button data-a="p" data-id="${l.p.id}">+</button></div><button class="rmx" data-a="rm" data-id="${l.p.id}" aria-label="ລົບ">✕</button></div>`).join("")}
+  <div class="tot"><span>ລວມທັງໝົດ</span><span>${fm(total())} ກີບ</span></div><div class="sub2"><span>✓ ລາຄາລວມຄ່າຫິ້ວແລ້ວ</span></div>
   <label>ຊື່ຂອງທ່ານ *</label><input id="fn" value="${esc(form.n)}" autocomplete="name">
   <label>ເບີໂທ / WhatsApp *</label><input id="fp" inputmode="tel" value="${esc(form.p)}" autocomplete="tel">
   <label>ໝາຍເຫດ (ສີ, ເບີ, ອື່ນໆ)</label><input id="fm" value="${esc(form.m)}">
